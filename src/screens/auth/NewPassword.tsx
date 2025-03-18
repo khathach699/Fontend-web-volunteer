@@ -46,10 +46,10 @@ const NewPassword = () => {
               { required: true, message: "Mật khẩu mới không được để trống" },
             ]}
           >
-            <Input
+            <Input.Password
               allowClear
               maxLength={100}
-              type="password"
+              // type="password"
               placeholder="Vui lòng nhập mật khẩu mới!"
               style={{
                 borderRadius: 50,
@@ -67,10 +67,10 @@ const NewPassword = () => {
               { required: true, message: "Mật khẩu mới không được để trống" },
             ]}
           >
-            <Input
+            <Input.Password
               allowClear
               maxLength={100}
-              type="password"
+              // type="password"
               placeholder="Vui lòng nhập lại mật khẩu mới"
               style={{
                 borderRadius: 50,

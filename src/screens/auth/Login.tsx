@@ -59,9 +59,9 @@ const Login = () => {
                   { required: true, message: "Password không được để trông!" },
                 ]}
               >
-                <Input
+                <Input.Password
                   maxLength={100}
-                  type="password"
+                  // type="password"
                   placeholder="Vui lòng nhập Password!"
                   style={{
                     borderRadius: 50,

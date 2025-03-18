@@ -2,3 +2,52 @@
   text-align: left !important; /* Căn trái toàn bộ lỗi */
   display: block !important; /* Đảm bảo xuống hàng */
 }
+
+/* Component Header */
+
+/* swiper  */
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: #000 !important; /* Màu đen */
+  width: 18.5px !important;
+  height: 30px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Thu nhỏ icon mũi tên */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 25px !important;
+  width: 18.5px !important;
+  height: 30px !important;
+}
+
+.swiper-button-prev {
+  left: 150px !important; /* Đưa nút trái vào gần hơn */
+}
+
+.swiper-button-next {
+  right: 150px !important; /* Đưa nút phải vào gần hơn */
+}
+
+/* Căn giữa nút theo chiều dọc */
+.swiper-button-prev,
+.swiper-button-next {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* pagination */
+.swiper-pagination {
+  bottom: 20px !important;
+  z-index: 10;
+}
+
+.list-info li {
+  font-weight: 400;
+  font-size: 30px;
+  padding-top: 15px;
+}
