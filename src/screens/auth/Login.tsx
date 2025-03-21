@@ -1,10 +1,21 @@
 import { Button, Card, Divider, Form, Input, Space, Typography } from "antd";
 import { Link } from "react-router-dom";
 import SocialLogin from "./components/SocialLogin";
+import handAPI from "../../apis/handleAPI";
 
 const Login = () => {
   const { Title } = Typography;
-  const [from] = Form.useForm();
+  const [form] = Form.useForm();
+
+  const handleLogin = async (values: { email: string; password: string }) => {
+    console.log(values);
+    try {
+      const res = await handAPI("/auth/register", values, "post");
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -29,12 +40,18 @@ const Login = () => {
             <div className="text-center">
               <Title level={2}>ĐĂNG NHẬP VỚI</Title>
             </div>
-            <Form layout="vertical" form={from} size="large">
+            <Form
+              layout="vertical"
+              form={form} // Gắn form instance
+              size="large"
+              onFinish={handleLogin}
+            >
               <Form.Item
-                name={"email"}
+                name="email"
                 label="Email"
                 rules={[
-                  { required: true, message: "Email không được để trông!" },
+                  { required: true, message: "Email không được để trống!" },
+                  { type: "email", message: "Email không hợp lệ!" },
                 ]}
               >
                 <Input
@@ -53,16 +70,15 @@ const Login = () => {
               </Form.Item>
 
               <Form.Item
-                name={"password"}
-                label={"Mật Khẩu"}
+                name="password"
+                label="Mật Khẩu"
                 rules={[
-                  { required: true, message: "Password không được để trông!" },
+                  { required: true, message: "Mật khẩu không được để trống!" },
                 ]}
               >
                 <Input.Password
                   maxLength={100}
-                  // type="password"
-                  placeholder="Vui lòng nhập Password!"
+                  placeholder="Vui lòng nhập mật khẩu!"
                   style={{
                     borderRadius: 50,
                     border: "2px solid #609966",
@@ -72,36 +88,38 @@ const Login = () => {
                   }}
                 />
               </Form.Item>
+
+              <div className="row">
+                <div className="col text-right">
+                  <Space size="middle">
+                    <Link to="/signUp" style={{ color: "#609966" }}>
+                      Đăng Ký?
+                    </Link>
+                    <Link to="/ForgotPassword" style={{ color: "#609966" }}>
+                      Quên mật khẩu?
+                    </Link>
+                  </Space>
+                </div>
+              </div>
+
+              <div className="mt-4 text-center">
+                <Button
+                  htmlType="submit"
+                  style={{
+                    width: "80%",
+                    height: 60,
+                    borderRadius: 50,
+                    background: "#609966", // Sửa typo "##609966" thành "#609966"
+                    color: "white", // Đổi màu chữ cho dễ đọc
+                  }}
+                  size="large"
+                >
+                  ĐĂNG NHẬP
+                </Button>
+              </div>
             </Form>
 
-            <div className="row">
-              <div className="col text-right">
-                <Space size={"middle"}>
-                  <Link to={"/signUp"} style={{ color: "#609966" }}>
-                    Đăng Ký?
-                  </Link>
-                  <Link to={"/ForgotPassword"} style={{ color: "#609966" }}>
-                    Quên mật khẩu?
-                  </Link>
-                </Space>
-              </div>
-            </div>
-
-            <div className="mt-4 text-center">
-              <Button
-                style={{
-                  width: "80%",
-                  height: 60,
-                  borderRadius: 50,
-                  background: "##609966",
-                  color: "black",
-                }}
-                size="large"
-              >
-                ĐĂNG NHẬP
-              </Button>
-            </div>
-            <div className="mt-4 ">
+            <div className="mt-4">
               <Divider>HOẶC</Divider>
             </div>
             <div className="mt-4 text-center">
