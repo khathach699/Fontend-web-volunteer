@@ -3,6 +3,7 @@ import "./App.css";
 import Routers from "./routers/Routers";
 import { Provider } from "react-redux";
 import store from "./reduxs/store";
+import { ToastContainer } from "react-toastify";
 
 message.config({
   top: 30,
@@ -17,6 +18,14 @@ function App() {
     <ConfigProvider>
       <Provider store={store}>
         <Routers />
+        <ToastContainer
+          position="top-right" // Vị trí toast
+          autoClose={3000} // Tự đóng sau 3 giây
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
       </Provider>
     </ConfigProvider>
   );

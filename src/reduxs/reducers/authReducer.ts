@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { localDataNames } from "../../constants/appInfos";
 
-// Định nghĩa interface cho trạng thái auth
 export interface AuthState {
   token: string;
   _id: string;
@@ -8,36 +8,49 @@ export interface AuthState {
   rule: number;
 }
 
-// Trạng thái ban đầu
-const initialState: AuthState = {
-  token: "",
-  _id: "",
-  name: "",
-  rule: 0,
+// Lấy dữ liệu từ localStorage nếu có, nếu không thì dùng mặc định
+const getInitialState = (): AuthState => {
+  const storedAuth = localStorage.getItem(localDataNames.authData);
+  return storedAuth
+    ? JSON.parse(storedAuth)
+    : {
+        token: "",
+        _id: "",
+        name: "",
+        rule: 0,
+      };
 };
 
-// Tạo slice
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    data: initialState,
+    data: getInitialState(), // Dùng hàm để lấy initial state
   },
   reducers: {
     addAuth: (state, action: { payload: AuthState }) => {
       state.data = action.payload;
+      syncLocal(action.payload);
+    },
+    removeAuth: (state) => {
+      state.data = {
+        token: "",
+        _id: "",
+        name: "",
+        rule: 0,
+      };
+      syncLocal(state.data);
     },
   },
 });
 
-// Định nghĩa kiểu cho toàn bộ state của store
 interface RootState {
-  authReducer: {
-    data: AuthState;
-  };
+  authReducer: { data: AuthState };
 }
 
 export const authReducer = authSlice.reducer;
-export const { addAuth } = authSlice.actions;
-
-// Selector với kiểu RootState thay cho any
+export const { addAuth, removeAuth } = authSlice.actions;
 export const authSelector = (state: RootState) => state.authReducer.data;
+
+function syncLocal(payload: AuthState) {
+  localStorage.setItem(localDataNames.authData, JSON.stringify(payload));
+}

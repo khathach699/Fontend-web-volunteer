@@ -1,7 +1,7 @@
-import React from "react";
+import HomeScreen from "../screens/home/HomeScreen";
 
 const MainRouter = () => {
-  return <div>MainRouter</div>;
+  return <HomeScreen />;
 };
 
 export default MainRouter;

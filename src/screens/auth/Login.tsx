@@ -1,19 +1,54 @@
 import { Button, Card, Divider, Form, Input, Space, Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import SocialLogin from "./components/SocialLogin";
-import handAPI from "../../apis/handleAPI";
+import handleAPI from "../../apis/handleAPI";
+import { addAuth } from "../../reduxs/reducers/authReducer";
+import { LoginResponse } from "../../types/auth";
+import { toast } from "react-toastify";
+
+const bg_login = "src/assets/backgrounds/bg_login.png";
+const lg_fb = "src/assets/logos/fb.png";
+const lg_google = "src/assets/logos/google.png";
+
+const { Title } = Typography;
 
 const Login = () => {
-  const { Title } = Typography;
   const [form] = Form.useForm();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogin = async (values: { email: string; password: string }) => {
-    console.log(values);
     try {
-      const res = await handAPI("/auth/register", values, "post");
-      console.log(res);
-    } catch (error) {
-      console.log(error);
+      const res = await handleAPI<LoginResponse>("/auth/login", values, "post");
+      console.log("Full response:", res);
+      if (res && res.data) {
+        const { token, _id, fullname } = res.data;
+        dispatch(
+          addAuth({
+            token,
+            _id,
+            name: fullname,
+            rule: 1,
+          })
+        );
+        toast.success(res.message || "Đăng nhập thành công!", {
+          position: "top-right",
+          autoClose: 1500,
+          onClose: () => navigate("home"),
+        });
+        form.resetFields();
+      } else {
+        throw new Error("Phản hồi không hợp lệ từ máy chủ");
+      }
+    } catch (error: unknown) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Đăng nhập thất bại!";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      console.error("Login Error:", error);
     }
   };
 
@@ -40,9 +75,10 @@ const Login = () => {
             <div className="text-center">
               <Title level={2}>ĐĂNG NHẬP VỚI</Title>
             </div>
+
             <Form
+              form={form}
               layout="vertical"
-              form={form} // Gắn form instance
               size="large"
               onFinish={handleLogin}
             >
@@ -109,8 +145,8 @@ const Login = () => {
                     width: "80%",
                     height: 60,
                     borderRadius: 50,
-                    background: "#609966", // Sửa typo "##609966" thành "#609966"
-                    color: "white", // Đổi màu chữ cho dễ đọc
+                    background: "#609966",
+                    color: "white",
                   }}
                   size="large"
                 >
@@ -119,20 +155,13 @@ const Login = () => {
               </div>
             </Form>
 
-            <div className="mt-4">
-              <Divider>HOẶC</Divider>
+            <Divider>HOẶC</Divider>
+
+            <div className="mt-4 text-center">
+              <SocialLogin logoUrl={lg_google} providerName="Google" />
             </div>
             <div className="mt-4 text-center">
-              <SocialLogin
-                logoUrl="src/assets/logos/google.png"
-                providerName="Google"
-              />
-            </div>
-            <div className="mt-4 text-center">
-              <SocialLogin
-                logoUrl="src/assets/logos/fb.png"
-                providerName="FaceBook"
-              />
+              <SocialLogin logoUrl={lg_fb} providerName="Facebook" />
             </div>
           </Card>
         </div>
@@ -143,7 +172,7 @@ const Login = () => {
           style={{ background: "#FFFFFF", height: "100%" }}
         >
           <img
-            src="src/assets/backgrounds/bg_login.png"
+            src={bg_login}
             alt="Login Background"
             className="img-fluid"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}

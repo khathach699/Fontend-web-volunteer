@@ -8,21 +8,33 @@ import {
   ForgotPasswordOTP,
 } from "../screens/auth/index";
 import HomeScreen from "../screens/home/HomeScreen";
+import { authSelector, AuthState } from "../reduxs/reducers/authReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const AuthRouter = () => {
+  const auth: AuthState = useSelector(authSelector);
+  const dispatch = useDispatch();
+
   return (
     <BrowserRouter>
       <Routes>
-        ForgotPasswordOTP
-        <Route path="/" element={<Login />}></Route>
-        <Route path="/signUp" element={<SignUp />}></Route>
-        <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
-        <Route path="/newPassword" element={<NewPassword />}></Route>
-        <Route path="/home" element={<HomeScreen />}></Route>
-        <Route
-          path="/ForgotPasswordOTP"
-          element={<ForgotPasswordOTP />}
-        ></Route>
+        {!auth.token ? (
+          <>
+            <Route path="/" element={<Login />} />
+            <Route path="/signUp" element={<SignUp />} />
+            <Route path="/ForgotPassword" element={<ForgotPassword />} />
+            <Route path="/newPassword" element={<NewPassword />} />
+            <Route path="/ForgotPasswordOTP" element={<ForgotPasswordOTP />} />
+            <Route path="*" element={<Login />} />{" "}
+            {/* Redirect về Login nếu không khớp */}
+          </>
+        ) : (
+          <>
+            <Route path="/home" element={<HomeScreen />} />
+            <Route path="*" element={<HomeScreen />} />{" "}
+            {/* Redirect về Home nếu không khớp */}
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );

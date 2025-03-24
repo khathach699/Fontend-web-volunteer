@@ -1,11 +1,16 @@
 import { Button, Card, Form, Input, message, Typography } from "antd";
-import { Link } from "react-router-dom";
-import handAPI from "../../apis/handleAPI";
+
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useState } from "react";
+
+import handleAPI from "../../apis/handleAPI";
+import { LoginResponse } from "../../apis/loginResponse";
 
 const SignUp = () => {
   const { Title } = Typography;
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const handleSignUp = async (values: {
@@ -14,7 +19,6 @@ const SignUp = () => {
     confirmPassword: string;
     fullname: string;
   }) => {
-    console.log("Dữ liệu form:", values);
     const payload = {
       email: values.email,
       password: values.password,
@@ -24,13 +28,17 @@ const SignUp = () => {
 
     const api = "/auth/register";
     try {
-      setIsLoading(true);
-      const res = await handAPI(api, payload, "post");
-      console.log("Phản hồi API:", res.data);
-      message.success("Đăng ký thành công!");
+      setIsLoading(true); // Đảm bảo trạng thái tải
+      const res = await handleAPI<LoginResponse>(api, payload, "post");
+      toast.success(res.message || "Đăng ký thành công!", {
+        position: "top-right",
+        autoClose: 1500,
+        onClose: () => navigate("/"),
+      });
       form.resetFields();
     } catch (error: unknown) {
-      console.log("Lỗi:", error);
+      console.error("Lỗi:", error);
+
       if (error instanceof Error) {
         message.error(error.message);
       } else {
