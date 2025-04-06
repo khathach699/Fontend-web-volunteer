@@ -1,4 +1,5 @@
 import React from "react";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   ForgotPassword,
@@ -6,7 +7,9 @@ import {
   SignUp,
   NewPassword,
   ForgotPasswordOTP,
+  Admin,
 } from "../screens/auth/index";
+import Activity from "../screens/auth/Activity";
 
 const AuthRouter = () => {
   return (
@@ -21,6 +24,8 @@ const AuthRouter = () => {
           path="/ForgotPasswordOTP"
           element={<ForgotPasswordOTP />}
         ></Route>
+        <Route path="/Activity" element={<Activity />}></Route>
+        <Route path="/Admin/*" element={<Admin/>}></Route>
       </Routes>
     </BrowserRouter>
   );
