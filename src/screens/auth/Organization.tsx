@@ -79,14 +79,6 @@ const OrganizationProfile = () => {
     },
   };
   
-  const itemStyle = {
-    display: "block",
-    padding: "10px 15px",
-    textDecoration: "none",
-    color: "#333",
-    fontSize: "14px",
-    borderBottom: "1px solid #eee",
-  };
   const [isFollowing, setIsFollowing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAllImages, setShowAllImages] = useState(false);
@@ -402,40 +394,40 @@ const OrganizationProfile = () => {
               <h2 style={{ fontSize: "24px", color: "#4CAF50", margin: 0 }}>
                 CHIẾN DỊCH PHÁT ĐỘNG
               </h2>
-              <button
-                onClick={() => setOpen(!open)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "#40513B",
-                }}
-              >
-                <MdMenu style={{ fontSize: "30px" }} />
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={() => setOpen(!open)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#40513B",
+                  }}
+                >
+                  <MdMenu style={{ fontSize: "30px" }} />
+                </button>
                 {open && (
                 <div
-                  className="dropdown-menu"
+                  className="dropdown-menu dropdown-menu-right show mt-2 "
                   style={{
                     position: "absolute",
-                    right: 0,
-                    marginTop: "8px",
-                    background: "#fff",
+                    right: "0",
+                    backgroundColor: "#fff",
                     border: "1px solid #ccc",
                     borderRadius: "8px",
-                    boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+                    boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.2)",
                     zIndex: 10,
                     minWidth: "180px",
                   }}
                 >
-                  <Link to="/" className="dropdown-item" style={itemStyle}>Đã hoàn thành</Link>
-                  <Link to="/" className="dropdown-item" style={itemStyle}>Chưa hoàn thành</Link>
-                  <Link to="/" className="dropdown-item" style={itemStyle}>Đang triển khai</Link>
-                </div>
+                  <Link to="/" className="dropdown-item" >Đã hoàn thành</Link>
+                  <Link to="/" className="dropdown-item" >Chưa hoàn thành</Link>
+                  <Link to="/" className="dropdown-item" >Đang triển khai</Link>
+                </div> 
                 )}
-              </button>
+              </div>              
             </div>
           </div>
-
           <div>
             <h2
               style={{
@@ -449,6 +441,7 @@ const OrganizationProfile = () => {
             </h2>
           <div
               style={{
+                position: "absolute",
                 border: "2px solid #609966",
                 backgroundColor: "#fff",
                 borderRadius: "10px",

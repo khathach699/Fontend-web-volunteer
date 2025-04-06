@@ -4,6 +4,7 @@ import { CheckOutlined, EditOutlined as Pencil } from "@ant-design/icons";
 import { FaCheck, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { MdMenu } from "react-icons/md";
 
 
 interface Activity {
@@ -24,6 +25,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     axios.get("") // Cập nhật API 
@@ -99,6 +101,7 @@ const ProfilePage = () => {
       display: "flex",
     },
   };
+
 
   return (
     <div
@@ -281,16 +284,51 @@ const ProfilePage = () => {
               </button>
             </h1>
           </div>
-          <div style={{ marginBottom: "20px", borderRadius: "10px", padding: "15px" }}>
-            <h2
-              style={{
-                fontSize: "24px",
-                color: "#4CAF50", // Đổi màu tiêu đề thành màu đen cho giống thiết kế
-                marginBottom: "20px",
-              }}
-            >
-              HOẠT ĐỘNG ĐÃ THAM GIA
-            </h2>
+            <div style={{ marginBottom: "20px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <h2 style={{ fontSize: "24px", color: "#4CAF50", margin: 0 }}>
+                            HOẠT ĐỘNG ĐÃ THAM GIA
+                          </h2>
+                          <div style={{ position: "relative" }}>
+                            <button
+                              onClick={() => setOpen(!open)}
+                              style={{
+                                background: "transparent",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "#40513B",
+                              }}
+                            >
+                              <MdMenu style={{ fontSize: "30px" }} />
+                            </button>
+                            {open && (
+                            <div
+                              className="dropdown-menu dropdown-menu-right show mt-2 "
+                              style={{
+                                position: "absolute",
+                                right: "0",
+                                backgroundColor: "#fff",
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.2)",
+                                zIndex: 10,
+                                minWidth: "180px",
+                              }}
+                            >
+                              <Link to="/" className="dropdown-item" >Đã hoàn thành</Link>
+                              <Link to="/" className="dropdown-item" >Chưa hoàn thành</Link>
+                              <Link to="/" className="dropdown-item" >Đang triển khai</Link>
+                            </div> 
+                            )}
+                          </div>              
+                        </div>
+                      </div>
             {[
               { name: "CHIẾN DỊCH THÁNG 3", points: 50, status: "Hoàn thành", completed: true, orgname: "TỔ CHỨC A" },
               { name: "CHIẾN DỊCH THÁNG 3", points: 50, status: "Hoàn thành", completed: true, orgname: "TỔ CHỨC A" },
@@ -307,7 +345,7 @@ const ProfilePage = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   backgroundColor: "#fff", // Nền xanh nhạt giống thiết kế
-                  borderRadius: "10px",
+                  borderRadius: "20px",
                   padding: "10px",
                   marginBottom: "20px",
                   border: "2px solid #40513B", 
@@ -412,7 +450,6 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 export default ProfilePage;
