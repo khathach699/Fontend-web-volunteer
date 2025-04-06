@@ -4,7 +4,6 @@ import {
   ForgotPassword,
   Login,
   SignUp,
-  NewPassword,
   ForgotPasswordOTP,
 } from "../screens/auth/index";
 import HomeScreen from "../screens/home/HomeScreen";
@@ -23,7 +22,6 @@ const AuthRouter = () => {
             <Route path="/" element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/ForgotPassword" element={<ForgotPassword />} />
-            <Route path="/newPassword" element={<NewPassword />} />
             <Route path="/ForgotPasswordOTP" element={<ForgotPasswordOTP />} />
             <Route path="*" element={<Login />} />{" "}
             {/* Redirect về Login nếu không khớp */}

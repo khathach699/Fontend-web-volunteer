@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, message, Typography } from "antd";
+import { Button, Card, Form, Input, Typography } from "antd";
 
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,11 +24,9 @@ const SignUp = () => {
       password: values.password,
       fullname: values.fullname,
     };
-    console.log("Dữ liệu gửi đi:", payload);
-
     const api = "/auth/register";
     try {
-      setIsLoading(true); // Đảm bảo trạng thái tải
+      setIsLoading(true);
       const res = await handleAPI<LoginResponse>(api, payload, "post");
       toast.success(res.message || "Đăng ký thành công!", {
         position: "top-right",
@@ -37,13 +35,12 @@ const SignUp = () => {
       });
       form.resetFields();
     } catch (error: unknown) {
-      console.error("Lỗi:", error);
-
-      if (error instanceof Error) {
-        message.error(error.message);
-      } else {
-        message.error("Đã xảy ra lỗi không xác định!");
+      if (typeof error === "object" && error !== null && "message" in error) {
+        const e = error as { message?: string };
+        toast.error(e.message || "Có lỗi xảy ra");
+        return;
       }
+      toast.error("Đã xảy ra lỗi không xác định!");
     } finally {
       setIsLoading(false);
     }

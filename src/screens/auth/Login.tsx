@@ -6,6 +6,7 @@ import handleAPI from "../../apis/handleAPI";
 import { addAuth } from "../../reduxs/reducers/authReducer";
 import { LoginResponse } from "../../types/auth";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 const bg_login = "src/assets/backgrounds/bg_login.png";
 const lg_fb = "src/assets/logos/fb.png";
@@ -15,12 +16,14 @@ const { Title } = Typography;
 
 const Login = () => {
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
+      setIsLoading(true);
       const res = await handleAPI<LoginResponse>("/auth/login", values, "post");
-      console.log("Full response:", res);
       if (res && res.data) {
         const { token, _id, fullname } = res.data;
         dispatch(
@@ -36,6 +39,7 @@ const Login = () => {
           autoClose: 1500,
           onClose: () => navigate("home"),
         });
+        setIsLoading(false);
         form.resetFields();
       } else {
         throw new Error("Phản hồi không hợp lệ từ máy chủ");
@@ -46,9 +50,11 @@ const Login = () => {
           ?.data?.message || "Đăng nhập thất bại!";
       toast.error(errorMessage, {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
-      console.error("Login Error:", error);
+      form.resetFields();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +86,7 @@ const Login = () => {
               form={form}
               layout="vertical"
               size="large"
+              disabled={isLoading}
               onFinish={handleLogin}
             >
               <Form.Item
@@ -140,6 +147,7 @@ const Login = () => {
 
               <div className="mt-4 text-center">
                 <Button
+                  loading={isLoading}
                   htmlType="submit"
                   style={{
                     width: "80%",

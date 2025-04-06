@@ -1,10 +1,38 @@
 import { Button, Card, Divider, Form, Input, Typography } from "antd";
-import { Link } from "react-router-dom";
-
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { LoginResponse } from "../../apis/loginResponse";
+import handleAPI from "../../apis/handleAPI";
+import { toast } from "react-toastify";
 const ForgotPassword = () => {
   const { Title } = Typography;
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
+  const handleForgotPassword = async (values: { email: string }) => {
+    const payload = {
+      email: values.email,
+    };
+    console.log(payload);
+    const api = "/auth/forgot-password";
+    try {
+      setIsLoading(true);
+      await handleAPI<LoginResponse>(api, payload, "post");
+      form.resetFields();
+      toast.success("Email đã được gửi đến bạn!");
+      navigate("/ForgotPasswordOTP");
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null && "message" in error) {
+        const e = error as { message?: string };
+        toast.error(e.message || "Có lỗi xảy ra");
+        return;
+      }
+      toast.error("Đã xảy ra lỗi không xác định!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div
       style={{
@@ -62,6 +90,8 @@ const ForgotPassword = () => {
 
         <div className="mt-4 text-center">
           <Button
+            loading={isLoading}
+            onClick={() => handleForgotPassword(form.getFieldsValue())}
             style={{
               width: "80%",
               height: 60,
