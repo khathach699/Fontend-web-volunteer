@@ -15,7 +15,6 @@ import Statistics from "../screens/auth/Admin/Statistics";
 import VolunteerManagement from "../screens/auth/Admin/VolunteerManagement";
 import PostManagement from "../screens/auth/Admin/PostManagement";
 import OriginManagement from "../screens/auth/Admin/OriginManagement";
-import CampainManagement from "../screens/auth/Admin/CampainManagement";
 const AuthRouter = () => {
   const auth: AuthState = useSelector(authSelector);
 
@@ -35,16 +34,12 @@ const AuthRouter = () => {
           <Route path="/activity" element={<Activity />} />
           <Route path="/admin/statistics" element={<Statistics />} />
           <Route
-            path="/admin/volunteermanagement"
+            path="/admin/volunteer-management"
             element={<VolunteerManagement />}
           />
-          <Route path="/admin/postmanagement" element={<PostManagement />} />
+          <Route path="/admin/post-management" element={<PostManagement />} />
           <Route
-            path="/admin/campainmanagement"
-            element={<CampainManagement />}
-          />
-          <Route
-            path="/admin/originmanagement"
+            path="/admin/origin-management"
             element={<OriginManagement />}
           />
           <Route path="/admin" element={<Admin />} />

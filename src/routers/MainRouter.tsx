@@ -7,6 +7,8 @@ import VolunteerManagement from "../screens/auth/Admin/VolunteerManagement";
 import PostManagement from "../screens/auth/Admin/PostManagement";
 import OriginManagement from "../screens/auth/Admin/OriginManagement";
 import CampainManagement from "../screens/auth/Admin/CampainManagement";
+import Profile from "../screens/auth/Profile";
+import Organization from "../screens/auth/Organization";
 const MainRouter = () => {
   return (
     <Routes>
@@ -21,6 +23,8 @@ const MainRouter = () => {
       <Route path="/admin/campainmanagement" element={<CampainManagement />} />
       <Route path="/admin/postmanagement" element={<PostManagement />} />
       <Route path="/admin/originmanagement" element={<OriginManagement />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/organization" element={<Organization />} />
       <Route path="*" element={<HomeScreen />} />
     </Routes>
   );
