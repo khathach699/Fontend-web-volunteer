@@ -5,4 +5,7 @@ import ForgotPasswordOTP from "./ForgotPasswordOTP";
 import NewPassword from "./NewPassword";
 import Organization from "./Organization";
 import Profile from "./Profile";
-export { Login, SignUp, ForgotPassword, ForgotPasswordOTP, NewPassword, Organization, Profile, };
+import ChangePassword from "./ChangePassword";
+import Upfile from "./Upfile";
+import Nonti from "./Nonti";
+export { Login, SignUp, ForgotPassword, ForgotPasswordOTP, NewPassword, Organization, Profile, ChangePassword, Upfile, Nonti };

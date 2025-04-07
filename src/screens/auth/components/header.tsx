@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ isDropdownOpen, setIsDropdownOpen }) =>
           <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
             Tình Nguyện
           </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
+          <Link to="/Nonti" style={{ color: "#40513B", marginRight: "40px" }}>
             Thông báo
           </Link>
         </div>
@@ -64,8 +64,8 @@ const Header: React.FC<HeaderProps> = ({ isDropdownOpen, setIsDropdownOpen }) =>
             {isDropdownOpen && (
               <div className="dropdown-menu dropdown-menu-right show mt-2">
                 <Link to="/Profile" className="dropdown-item ">Thông tin cá nhân</Link>
-                <Link to="/Setting" className="dropdown-item ">Nâng cấp lên tổ chức</Link>
-                <Link to="/Changepassword" className="dropdown-item ">Đổi mật khẩu</Link>
+                <Link to="/Upfile" className="dropdown-item ">Nâng cấp lên tổ chức</Link>
+                <Link to="/ChangePassword" className="dropdown-item ">Đổi mật khẩu</Link>
                 <Link to="/" className="dropdown-item ">Đăng xuất</Link>
               </div>
             )}
