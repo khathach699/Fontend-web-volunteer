@@ -60,8 +60,8 @@ const TableAdmin: React.FC = () => {
                     />
                     <img className="w-6 h-6 rounded-full mr-3" style={{ border: "1px solid black" }} src="../src/assets/avatar.jpg" alt="avatar" />
 
-                    <span className="mr-3 w-24">{user.name}</span>
-                    <span className="flex-1 text-gray-600">{user.email}</span>
+                    <span className="mr-3 w-64">{user.name}</span>
+                    <span className="flex-1 w-64 text-gray-600">{user.email}</span>
 
                     {/* Icons */}
                     <AssignmentTurnedInOutlined className="text-green-400 hover:text-green-300 cursor-pointer mx-1" />

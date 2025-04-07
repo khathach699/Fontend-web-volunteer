@@ -1,10 +1,7 @@
-import Search from "./components/Search";
-import ButtonNew from "./components/ButtonNew";
-import Post from "./components/post";
 import { useState } from "react";
 import NewPost from "./components/NewPost";
 
-const Activity = () => {
+const Campain = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleOpenModal = () => setIsModalOpen(true);
@@ -18,15 +15,12 @@ const Activity = () => {
             <div className="flex flex-col justify-center ">
                 <div className="my-3 flex justify-center z-10">
                     <div onClick={handleOpenModal}>
-                        <ButtonNew />
+                        chiến dịch mới
                     </div>
                     <div className="w-5"></div>
-                    <Search />
                 </div>
                 <div className=" flex flex-col items-center justify-center z-10" >
-                    <Post />
-                    <Post />
-                    <Post />
+                    Camp
                 </div>
             </div>
             <div>
@@ -40,4 +34,4 @@ const Activity = () => {
     );
 };
 
-export default Activity;
+export default Campain;

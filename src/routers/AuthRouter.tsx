@@ -10,6 +10,7 @@ import {
   Admin,
 } from "../screens/auth/index";
 import Activity from "../screens/auth/Activity";
+import Campain from "../screens/auth/Campain";
 
 const AuthRouter = () => {
   return (
@@ -25,6 +26,7 @@ const AuthRouter = () => {
           element={<ForgotPasswordOTP />}
         ></Route>
         <Route path="/Activity" element={<Activity />}></Route>
+        <Route path="/Campain" element={<Campain />}></Route>
         <Route path="/Admin/*" element={<Admin/>}></Route>
       </Routes>
     </BrowserRouter>

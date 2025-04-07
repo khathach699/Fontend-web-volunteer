@@ -25,11 +25,11 @@ const AvatarAdmin: React.FC = () => {
             <KeyboardArrowDown/>
             {
                 isOpen && (
-                    <div className="absolute bg-white border-2 border-black rounded-lg shadow-lg w-[200px] -m-25 p-1">
+                    <div className="absolute bg-white border-1 border-black rounded-lg shadow-lg w-[200px] -m-28 p-1">
                         <ul className="m-1">
-                            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><span className="px-2"><Settings></Settings></span>Setting</li>
-                            <hr className="border-t border-black-300 mx-4" />
-                            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><span className="px-2"><Logout></Logout></span>Log out</li>
+                            <li className=" hover:bg-gray-200 cursor-pointer mx-4"><span className="px-2"><Settings></Settings></span>Setting</li>
+                            <hr className="border-t border-black-300 m-2" />
+                            <li className=" hover:bg-gray-200 cursor-pointer mx-4"><span className="px-2"><Logout></Logout></span>Log out</li>
                         </ul>
                     </div>
                 )
