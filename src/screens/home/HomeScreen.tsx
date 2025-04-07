@@ -9,6 +9,35 @@ import avatar from "/src/assets/backgrounds/Rectangle 9.png";
 import HeaderComponent from "../../components/Header";
 import FeaturedMembers from "./components/FeaturedMembers";
 import { Typography } from "antd";
+import { useEffect, useState } from "react";
+import handleAPI from "../../apis/handleAPI";
+
+// Add interface for featured user
+interface FeaturedUser {
+  _id: string;
+  fullname: string;
+  avatar?: string;
+  point: number;
+}
+
+// Interface for featured campaign
+interface FeaturedCampaign {
+  _id: string;
+  name: string;
+  participated: number;
+  donate: number;
+  dayStart: string;
+  numberOfDay: number;
+  organization: {
+    _id: string;
+    Inform: string;
+  };
+  images: {
+    _id: string;
+    imgUrl: string;
+  }[];
+  img?: string;
+}
 
 const activities = [
   {
@@ -37,9 +66,10 @@ const activities = [
   },
 ];
 
-const newMembers = [
+// Default fallback data
+const defaultMembers = [
   {
-    avatar: "/src/assets/logos/1.png", // Đảm bảo ảnh nằm trong thư mục public/logos
+    avatar: "/src/assets/logos/1.png",
     title: "John Doe",
     number: 120,
     start: <FaStar />,
@@ -83,47 +113,106 @@ const newMembers = [
   },
 ];
 
-const Members = [
+// Default fallback data for campaigns
+const defaultCampaigns = [
   {
-    avatar: "/src/assets/logos/1.png", // Đảm bảo ảnh nằm trong thư mục public/logos
-    title: "John Doe",
+    avatar: "/src/assets/logos/1.png",
+    title: "Chiến dịch trồng rừng",
     number: 120,
   },
   {
     avatar: "/src/assets/logos/2.png",
-    title: "Jane Smith",
+    title: "Chiến dịch hỗ trợ trẻ em vùng cao",
     number: 80,
   },
   {
     avatar: "/src/assets/logos/3.png",
-    title: "Jane Smith",
-    number: 80,
+    title: "Chiến dịch phát quà Tết",
+    number: 65,
   },
   {
     avatar: "/src/assets/logos/4.png",
-    title: "Jane Smith",
-    number: 80,
+    title: "Chiến dịch sửa chữa trường học",
+    number: 45,
   },
   {
-    avatar: "/src/assets/logos/5.png", // Link ảnh tạm
-    title: "Alex Brown",
-    number: 95,
-  },
-
-  {
-    avatar: "/src/assets/logos/3d_avatar_20.png", // Link ảnh tạm
-    title: "Alex Brown",
-    number: 95,
-  },
-  {
-    avatar: "/src/assets/backgrounds/Rectangle 9.png", // Link ảnh tạm
-    title: "background Brown background Brown background Brown",
-    number: 95,
+    avatar: "/src/assets/logos/5.png",
+    title: "Chiến dịch quyên góp sách vở",
+    number: 30,
   },
 ];
 
 const Text = Typography;
 const HomeScreen = () => {
+  const [newMembers, setNewMembers] = useState(defaultMembers);
+  const [featuredCampaigns, setFeaturedCampaigns] = useState(defaultCampaigns);
+
+  useEffect(() => {
+    const fetchFeaturedMembers = async () => {
+      try {
+        const response = await handleAPI<{
+          success: boolean;
+          data: { featuredUsers: FeaturedUser[] };
+        }>("/users/featured?limit=7", {}, "get");
+
+        if (response.success && response.data.featuredUsers) {
+          // Transform API data to match the component's expected format
+          const transformedMembers = response.data.featuredUsers.map(
+            (user) => ({
+              avatar: user.avatar || "/src/assets/logos/avt.png",
+              title: user.fullname || "Volunteer",
+              number: user.point || 0,
+              start: <FaStar />,
+            })
+          );
+
+          setNewMembers(transformedMembers);
+        }
+      } catch (error) {
+        console.error("Error fetching featured members:", error);
+        // Keep using default members if API fails
+      }
+    };
+
+    const fetchFeaturedCampaigns = async () => {
+      try {
+        const response = await handleAPI<{
+          success: boolean;
+          data: { featuredCampaigns: FeaturedCampaign[] };
+        }>("/campaigns/featured?limit=7", {}, "get");
+
+        if (response.success && response.data.featuredCampaigns) {
+          // Transform API data to match the component's expected format
+          const transformedCampaigns = response.data.featuredCampaigns.map(
+            (campaign) => {
+              // Lấy ảnh từ campaign, ưu tiên images array trước, sau đó là img
+              const imageUrl =
+                campaign.images && campaign.images.length > 0
+                  ? campaign.images[0].imgUrl
+                  : campaign.img || "/src/assets/logos/campaign_default.png";
+
+              return {
+                avatar: imageUrl,
+                title: campaign.name || "Chiến dịch",
+                number: campaign.participated || 0,
+                // Thêm thông tin tổ chức nếu có
+                description: campaign.organization?.Inform || "",
+              };
+            }
+          );
+
+          setFeaturedCampaigns(transformedCampaigns);
+        }
+      } catch (error) {
+        console.error("Error fetching featured campaigns:", error);
+        // Keep using default campaigns if API fails
+      }
+    };
+
+    fetchFeaturedMembers();
+    fetchFeaturedCampaigns();
+  }, []);
+
   return (
     <>
       <HeaderComponent />
@@ -299,10 +388,10 @@ const HomeScreen = () => {
             marginLeft: "11%",
           }}
         >
-          TỔ CHỨC NỔI BẬT
+          CHIẾN DỊCH NỔI BẬT
         </Text>
 
-        <FeaturedMembers members={Members} />
+        <FeaturedMembers members={featuredCampaigns} />
         <Text
           style={{
             fontSize: 30,
