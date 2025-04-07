@@ -17,7 +17,7 @@ const PostManagement = () => {
             <div className="flex justify-start ">DANH SÁCH BÀI ĐĂNG</div>
             <NoDeleteTable />
             <div className="flex justify-end">
-                <button className="text-black px-4 py-2 mr-2 rounded-3xl mt-4 bg-white" style={{ border: "1px solid black" }}>KHÔNG CHẤP NHẬN</button>
+                <button className="text-black px-4 py-2 mr-2 rounded-3xl mt-4 bg-white" style={{ border: "1px solid black" }}>KHÔNG DUYỆT</button>
                 <button className="text-black px-4 py-2 rounded-3xl mt-4" style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}>DUYỆT</button>
 
             </div>

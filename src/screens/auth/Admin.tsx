@@ -27,9 +27,9 @@ const Admin = () => {
     };
 
     return (
-        <div className='bg-[#EDF1D6] w-screen h-min-full flex'>
+        <div className='bg-[#EDF1D6] w-screen min-h-screen flex '>
             <SideBar onSelect={setSelectedPage} />
-            <div className="flex-1">
+            <div className="flex-1 ml-85">
                 <div className="p-4">
                     {renderContent()}
                 </div>
