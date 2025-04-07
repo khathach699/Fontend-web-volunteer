@@ -21,6 +21,11 @@ const FeaturedMembers: React.FC<FeaturedMembersProps> = ({ members }) => {
   // Sắp xếp thành viên theo số point từ cao đến thấp
   const sortedMembers = [...members].sort((a, b) => b.number - a.number);
 
+  // Tính số lượng slides để hiển thị
+  const slidesPerView = Math.min(sortedMembers.length, 5);
+  // Chỉ bật loop khi có đủ slide
+  const enableLoop = sortedMembers.length > slidesPerView;
+
   return (
     <div
       style={{
@@ -36,8 +41,8 @@ const FeaturedMembers: React.FC<FeaturedMembersProps> = ({ members }) => {
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         speed={500}
         spaceBetween={30}
-        slidesPerView={5}
-        loop={true}
+        slidesPerView={slidesPerView}
+        loop={enableLoop}
         style={{ width: "90%", height: "240px", margin: "auto" }}
       >
         {sortedMembers.map((member, index) => (

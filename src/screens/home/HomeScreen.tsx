@@ -8,7 +8,7 @@ import logo from "/src/assets/logos/logo.png";
 import avatar from "/src/assets/backgrounds/Rectangle 9.png";
 import HeaderComponent from "../../components/Header";
 import FeaturedMembers from "./components/FeaturedMembers";
-import { Typography } from "antd";
+import { Typography, Spin } from "antd";
 import { useEffect, useState } from "react";
 import handleAPI from "../../apis/handleAPI";
 
@@ -18,6 +18,32 @@ interface FeaturedUser {
   fullname: string;
   avatar?: string;
   point: number;
+}
+
+// Interface for API response
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
+// Interface for FeaturedActivitiesResponse
+interface FeaturedActivitiesResponse {
+  featuredActivities: Array<{
+    _id: string;
+    name: string;
+    content?: string;
+    organization?: {
+      Inform?: string;
+      logo?: string;
+    };
+    organizationInfo?: {
+      name?: string;
+      logo?: string;
+    };
+    images?: Array<{ imgUrl: string }>;
+    img?: string;
+  }>;
 }
 
 // Interface for featured campaign
@@ -39,7 +65,17 @@ interface FeaturedCampaign {
   img?: string;
 }
 
-const activities = [
+// Define interface for activity items
+interface ActivityItem {
+  id: string | number;
+  logo: string;
+  image: string;
+  title: string;
+  description: string;
+}
+
+// Update activities to use dynamic data instead of static
+const defaultActivities: ActivityItem[] = [
   {
     id: 1,
     logo: "/src/assets/logos/3d_avatar_19.png",
@@ -62,7 +98,7 @@ const activities = [
     image: "/src/assets/backgrounds/logo (1).png",
     title: "Tổ chức C",
     description:
-      "Chúng tôi rất vui vì đã tổ chức nhiều sự kiện giúp cộng đồng phát triển và gắn kết... Chúng tôi rất vui vì đã tổ chức nhiều sự kiện giúp cộng đồng phát triển và gắn kết... Chúng tôi rất vui vì đã tổ chức nhiều sự kiện giúp cộng đồng phát triển và gắn kết... Chúng tôi rất vui vì đã tổ chức nhiều sự kiện giúp cộng đồng phát triển và gắn kết...",
+      "Chúng tôi rất vui vì đã tổ chức nhiều sự kiện giúp cộng đồng phát triển và gắn kết...",
   },
 ];
 
@@ -146,6 +182,9 @@ const Text = Typography;
 const HomeScreen = () => {
   const [newMembers, setNewMembers] = useState(defaultMembers);
   const [featuredCampaigns, setFeaturedCampaigns] = useState(defaultCampaigns);
+  const [activities, setActivities] =
+    useState<ActivityItem[]>(defaultActivities);
+  const [loadingActivities, setLoadingActivities] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedMembers = async () => {
@@ -168,8 +207,7 @@ const HomeScreen = () => {
 
           setNewMembers(transformedMembers);
         }
-      } catch (error) {
-        console.error("Error fetching featured members:", error);
+      } catch {
         // Keep using default members if API fails
       }
     };
@@ -203,15 +241,88 @@ const HomeScreen = () => {
 
           setFeaturedCampaigns(transformedCampaigns);
         }
-      } catch (error) {
-        console.error("Error fetching featured campaigns:", error);
+      } catch {
         // Keep using default campaigns if API fails
+      }
+    };
+
+    const fetchFeaturedActivities = async () => {
+      try {
+        setLoadingActivities(true);
+        const response = await handleAPI<
+          ApiResponse<FeaturedActivitiesResponse>
+        >("/campaigns/featured-activities?limit=3", {}, "get");
+
+        // Kiểm tra chi tiết hơn cấu trúc response
+        if (response && response.success) {
+          // Kiểm tra chính xác xem featuredActivities có tồn tại và là mảng không
+          const featuredActivities = response.data?.featuredActivities || [];
+
+          if (
+            Array.isArray(featuredActivities) &&
+            featuredActivities.length > 0
+          ) {
+            // Transform API data to match the component's expected format
+            const transformedActivities = featuredActivities.map((activity) => {
+              // Lấy ảnh từ activity, ưu tiên images array trước, sau đó là img
+              const imageUrl =
+                activity.images && activity.images.length > 0
+                  ? activity.images[0].imgUrl
+                  : activity.img || "/src/assets/backgrounds/Rectangle 24.png";
+
+              // Cắt nội dung nếu quá dài
+              const shortDescription =
+                activity.content && activity.content.length > 150
+                  ? `${activity.content.substring(0, 150)}...`
+                  : activity.content || "Không có mô tả";
+
+              // Lấy thông tin tổ chức đúng cách
+              let orgName = "Tổ chức không xác định";
+              let orgLogo = "/src/assets/logos/avt.png";
+
+              // Thử lấy từ trường organizationInfo (mới)
+              if (activity.organizationInfo) {
+                orgName = activity.organizationInfo.name || orgName;
+                orgLogo = activity.organizationInfo.logo || orgLogo;
+              }
+              // Thử lấy trực tiếp từ trường organization (cũ)
+              else if (
+                activity.organization &&
+                typeof activity.organization === "object"
+              ) {
+                orgName = activity.organization.Inform || orgName;
+                orgLogo = activity.organization.logo || orgLogo;
+              }
+
+              return {
+                id: activity._id,
+                logo: orgLogo,
+                image: imageUrl,
+                title: orgName,
+                description: shortDescription,
+              };
+            });
+
+            if (transformedActivities.length > 0) {
+              setActivities(transformedActivities);
+            }
+          }
+        }
+      } catch {
+        // Keep using default activities if API fails
+      } finally {
+        setLoadingActivities(false);
       }
     };
 
     fetchFeaturedMembers();
     fetchFeaturedCampaigns();
+    fetchFeaturedActivities();
   }, []);
+
+  // Đảm bảo luôn có dữ liệu hiển thị
+  const displayActivities =
+    activities.length > 0 ? activities : defaultActivities;
 
   return (
     <>
@@ -293,80 +404,130 @@ const HomeScreen = () => {
             marginRight: "auto",
             marginTop: "70px",
             marginLeft: "11%",
+            color: "#4CAF50",
+            fontWeight: "bold",
           }}
         >
           HOẠT ĐỘNG NỔI BẬT
         </Text>
 
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          speed={500}
-          pagination={{ clickable: true }}
-          spaceBetween={5}
-          slidesPerView={2}
-          loop={true}
-          style={{ width: "77%", height: "250px", margin: "auto" }}
-        >
-          {activities.map((activity) => (
-            <SwiperSlide key={activity.id}>
-              <div
-                style={{
-                  background: "#fff",
-                  height: "200px",
-                  // maxHeight: "200px",
-                  borderRadius: "10px",
-                  boxShadow: "0px 2px 10px rgba(0,0,0,0.1)",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  padding: "15px",
-                  textAlign: "center",
-                  maxWidth: "100%",
-                }}
-              >
-                <div className="row d-flex align-items-center">
-                  <div className="col-6">
-                    <div className="d-flex align-items-center mb-3">
-                      <img
-                        src={activity.logo}
+        {loadingActivities ? (
+          <div
+            style={{
+              width: "77%",
+              margin: "auto",
+              textAlign: "center",
+              padding: "20px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Spin size="large" />
+            <span style={{ marginLeft: "10px", lineHeight: "32px" }}>
+              Đang tải hoạt động nổi bật...
+            </span>
+          </div>
+        ) : displayActivities.length === 0 ? (
+          <div
+            style={{
+              width: "77%",
+              margin: "auto",
+              textAlign: "center",
+              padding: "20px",
+              background: "#fff",
+              borderRadius: "10px",
+              boxShadow: "0px 2px 10px rgba(0,0,0,0.1)",
+            }}
+          >
+            <p style={{ fontSize: "16px", color: "#666" }}>
+              Chưa có hoạt động nổi bật nào. Hãy quay lại sau!
+            </p>
+          </div>
+        ) : (
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            speed={500}
+            pagination={{ clickable: true }}
+            spaceBetween={20}
+            slidesPerView={displayActivities.length < 2 ? 1 : 2}
+            loop={displayActivities.length >= 3}
+            style={{ width: "77%", height: "250px", margin: "auto" }}
+          >
+            {displayActivities.map((activity) => (
+              <SwiperSlide key={activity.id}>
+                <div
+                  style={{
+                    background: "#fff",
+                    height: "200px",
+                    borderRadius: "10px",
+                    boxShadow: "0px 2px 10px rgba(0,0,0,0.1)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    padding: "15px",
+                    textAlign: "center",
+                    maxWidth: "100%",
+                  }}
+                >
+                  <div className="row d-flex align-items-center">
+                    <div className="col-6">
+                      <div className="d-flex align-items-center mb-3">
+                        <img
+                          src={activity.logo}
+                          onError={(e) => {
+                            // Nếu ảnh lỗi, dùng ảnh mặc định
+                            (e.target as HTMLImageElement).src =
+                              "/src/assets/logos/1.png";
+                          }}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            marginRight: "10px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                          alt="Logo"
+                        />
+                        <h3 style={{ fontSize: "16px", margin: "0" }}>
+                          {activity.title}
+                        </h3>
+                      </div>
+                      <p
                         style={{
-                          width: "40px",
-                          height: "40px",
-                          marginRight: "10px",
+                          fontSize: "14px",
+                          color: "#666",
+                          textAlign: "justify",
+                          maxHeight: "120px",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {activity.description}
+                      </p>
+                    </div>
+
+                    <div className="col-6">
+                      <img
+                        src={activity.image}
+                        onError={(e) => {
+                          // Nếu ảnh lỗi, dùng ảnh mặc định
+                          (e.target as HTMLImageElement).src =
+                            "/src/assets/backgrounds/Rectangle 24.png";
+                        }}
+                        alt={activity.title}
+                        style={{
+                          width: "100%",
+                          height: "150px",
+                          objectFit: "cover",
+                          borderRadius: "10px",
                         }}
                       />
-                      <h3 style={{ fontSize: "16px", margin: "0" }}>
-                        {activity.title}
-                      </h3>
                     </div>
-                    <p
-                      style={{
-                        fontSize: "14px",
-                        color: "#666",
-                        textAlign: "justify",
-                      }}
-                    >
-                      {activity.description}
-                    </p>
-                  </div>
-
-                  <div className="col-6">
-                    <img
-                      src={activity.image}
-                      alt={activity.title}
-                      style={{
-                        width: "100%",
-                        height: "150px",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                      }}
-                    />
                   </div>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
 
         <Text
           style={{
@@ -388,10 +549,14 @@ const HomeScreen = () => {
             marginLeft: "11%",
           }}
         >
-          CHIẾN DỊCH NỔI BẬT
+          TỔ CHỨC NỔI BẬT
         </Text>
 
-        <FeaturedMembers members={featuredCampaigns} />
+        <FeaturedMembers
+          members={
+            featuredCampaigns.length >= 5 ? featuredCampaigns : defaultCampaigns
+          }
+        />
         <Text
           style={{
             fontSize: 30,
