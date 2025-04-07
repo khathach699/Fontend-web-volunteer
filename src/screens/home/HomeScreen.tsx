@@ -132,7 +132,7 @@ const HomeScreen = () => {
         className="d-flex flex-column justify-content-center align-items-center  "
         style={{
           minHeight: "100vh",
-          width: "100vw",
+          width: "100%",
           overflowY: "auto",
           paddingTop: "100px",
           background: "#EDF1D6",

@@ -5,54 +5,38 @@ import WaitTable from "../components/WaitTable";
 const OriginManagement = () => {
   return (
     <div>
-      <div className="flex p-4 bg-white border-1 border-black rounded-2xl justify-between ">
+      <div className="flex justify-between items-center p-4 bg-white rounded-2xl border border-black">
         <h2 className="font-bold m-0">QUẢN LÝ TỔ CHỨC</h2>
-        <div className="justify-self-end mr-[20]">
+        <div>
           <AvatarAdmin />
         </div>
       </div>
-      <div className="flex justify-end mt-4">
-        <div className="flex items-center">
-          <button
-            className=" text-black px-4 py-2 rounded-3xl mr-2"
-            style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
-          >
-            VÔ HIỆU
-          </button>
-          <button
-            className=" text-black px-4 py-2 rounded-3xl mr-2"
-            style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
-          >
-            XÓA
-          </button>
-          <button
-            className=" text-black px-4 py-2 rounded-3xl mr-2"
-            style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
-          >
-            XUẤT EXCEL
-          </button>
-        </div>
+
+      <div className="flex justify-end mt-4 space-x-2">
+        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
+          VÔ HIỆU
+        </button>
+        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
+          XÓA
+        </button>
+        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
+          XUẤT EXCEL
+        </button>
       </div>
-      <div className="flex justify-start ">DANH SÁCH TỔ CHỨC</div>
+
+      <div className="mt-4 font-medium">DANH SÁCH TỔ CHỨC</div>
       <TableAdmin />
-      <br />
-      <div className="flex justify-end ">
-        <div className="flex items-center">
-          <button
-            className=" text-black px-4 py-2 rounded-3xl mr-2 bg-white"
-            style={{ border: "1px solid black" }}
-          >
-            KHÔNG CHẤP NHẬN
-          </button>
-          <button
-            className=" text-black px-4 py-2 rounded-3xl mr-2"
-            style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
-          >
-            DUYỆT
-          </button>
-        </div>
+
+      <div className="flex justify-end mt-8 space-x-2">
+        <button className="px-4 py-2 rounded-3xl border border-black bg-white text-black">
+          KHÔNG CHẤP NHẬN
+        </button>
+        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
+          DUYỆT
+        </button>
       </div>
-      <div className="flex justify-start ">CÁC TỔ CHỨC ĐANG CHỜ DUYỆT</div>
+
+      <div className="mt-4 font-medium">CÁC TỔ CHỨC ĐANG CHỜ DUYỆT</div>
       <WaitTable />
     </div>
   );

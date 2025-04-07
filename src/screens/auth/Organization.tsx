@@ -3,6 +3,7 @@ import axios from "axios";
 import { CheckOutlined, EditOutlined as Pencil } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
+import HeaderComponent from "../../components/Header";
 
 interface Organization {
   Id: string;
@@ -82,7 +83,6 @@ const OrganizationProfile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [showAllImages, setShowAllImages] = useState(false);
   const [volunteerCount, setVolunteerCount] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const handleFollowToggle = () => {
     setIsFollowing(!isFollowing);
@@ -172,85 +172,7 @@ const OrganizationProfile = () => {
         fontFamily: "'Jura', sans-serif",
       }}
     >
-      <header
-        className="flex justify-between items-center py-4 px-8"
-        style={{
-          height: "80px",
-          display: "flex",
-          padding: "10px",
-          alignItems: "center",
-        }}
-      >
-        <div className="flex items-start">
-          <img
-            src="src/assets/logos/logo.png"
-            alt="Logo"
-            className="h-10 object-cover"
-            style={{ height: "100px", width: "auto" }}
-          />
-        </div>
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
-            Trang chủ
-          </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
-            Hoạt động
-          </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
-            Tình Nguyện
-          </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
-            Thông báo
-          </Link>
-        </div>
-        <div className="dropdown" style={{ position: "relative" }}>
-          <div
-            style={{
-              fontSize: "16px",
-              fontFamily: "'popins', sans-serif",
-              height: "40px",
-              width: "40px",
-              borderRadius: "50%",
-              boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.2)",
-              cursor: "pointer",
-            }}
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            <img
-              src="src/assets/logos/avt.png"
-              alt="icon"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-            {isDropdownOpen && (
-              <div className="dropdown-menu dropdown-menu-right show mt-2">
-                <Link to="/Profile" className="dropdown-item ">
-                  Thông tin cá nhân
-                </Link>
-                <Link to="/Setting" className="dropdown-item ">
-                  Nâng cấp lên tổ chức
-                </Link>
-                <Link to="/Changepassword" className="dropdown-item ">
-                  Đổi mật khẩu
-                </Link>
-                <Link to="/" className="dropdown-item ">
-                  Đăng xuất
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <HeaderComponent />
       <div
         className="row"
         style={{
