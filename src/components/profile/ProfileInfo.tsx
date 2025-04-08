@@ -53,8 +53,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       const id = decoded.id;
 
       // Call the update user API
+      const api = "/users";
       const res = await handleAPI<ApiResponse>(
-        `/users/${id}`,
+        api,
         {
           id: id,
           fullname: newName,
@@ -69,7 +70,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       } else {
         toast.error("Không thể cập nhật tên. Vui lòng thử lại sau.");
       }
-    } catch {
+    } catch (error) {
+      console.error("Error updating name:", error);
       toast.error("Đã xảy ra lỗi khi cập nhật tên. Vui lòng thử lại sau.");
     }
   };

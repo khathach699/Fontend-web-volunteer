@@ -13,12 +13,12 @@ import { useEffect, useState } from "react";
 import handleAPI from "../../apis/handleAPI";
 
 // Add interface for featured user
-interface FeaturedUser {
-  _id: string;
-  fullname: string;
-  avatar?: string;
-  point: number;
-}
+// interface FeaturedUser {
+//   _id: string;
+//   fullname: string;
+//   avatar?: string;
+//   point: number;
+// }
 
 // Interface for API response
 interface ApiResponse<T> {
@@ -27,43 +27,24 @@ interface ApiResponse<T> {
   message?: string;
 }
 
-// Interface for FeaturedActivitiesResponse
-interface FeaturedActivitiesResponse {
-  featuredActivities: Array<{
-    _id: string;
-    name: string;
-    content?: string;
-    organization?: {
-      Inform?: string;
-      logo?: string;
-    };
-    organizationInfo?: {
-      name?: string;
-      logo?: string;
-    };
-    images?: Array<{ imgUrl: string }>;
-    img?: string;
-  }>;
-}
-
 // Interface for featured campaign
-interface FeaturedCampaign {
-  _id: string;
-  name: string;
-  participated: number;
-  donate: number;
-  dayStart: string;
-  numberOfDay: number;
-  organization: {
-    _id: string;
-    Inform: string;
-  };
-  images: {
-    _id: string;
-    imgUrl: string;
-  }[];
-  img?: string;
-}
+// interface FeaturedCampaign {
+//   id: string;
+//   name: string;
+//   img?: string;
+//   images?: Array<{ imgUrl: string }>;
+//   participated: number;
+//   organization?: {
+//     Inform: string;
+//   };
+//   content?: string;
+//   location?: string;
+//   startDate?: string;
+//   endDate?: string;
+//   status?: string;
+//   targetAmount?: number;
+//   currentAmount?: number;
+// }
 
 // Define interface for activity items
 interface ActivityItem {
@@ -181,7 +162,9 @@ const defaultCampaigns = [
 const Text = Typography;
 const HomeScreen = () => {
   const [newMembers, setNewMembers] = useState(defaultMembers);
+
   const [featuredCampaigns, setFeaturedCampaigns] = useState(defaultCampaigns);
+
   const [activities, setActivities] =
     useState<ActivityItem[]>(defaultActivities);
   const [loadingActivities, setLoadingActivities] = useState(false);
@@ -189,127 +172,198 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchFeaturedMembers = async () => {
       try {
-        const response = await handleAPI<{
-          success: boolean;
-          data: { featuredUsers: FeaturedUser[] };
-        }>("/users/featured?limit=7", {}, "get");
+        const response = await handleAPI<
+          ApiResponse<{
+            featuredUsers: Array<{
+              _id: string;
+              fullname: string;
+              avatar?: string;
+              point: number;
+            }>;
+          }>
+        >("/users/featured?limit=7", {}, "get");
 
-        if (response.success && response.data.featuredUsers) {
-          // Transform API data to match the component's expected format
-          const transformedMembers = response.data.featuredUsers.map(
-            (user) => ({
-              avatar: user.avatar || "/src/assets/logos/avt.png",
-              title: user.fullname || "Volunteer",
-              number: user.point || 0,
-              start: <FaStar />,
-            })
-          );
+        if (
+          response &&
+          response.success &&
+          response.data &&
+          response.data.featuredUsers
+        ) {
+          const featuredUsers = response.data.featuredUsers;
 
-          setNewMembers(transformedMembers);
+          if (featuredUsers.length > 0) {
+            // Transform API data to match the component's expected format
+            const transformedMembers = featuredUsers.map((user) => {
+              const result = {
+                avatar: user.avatar || "/src/assets/logos/avt.png",
+                title: user.fullname || "Volunteer",
+                number: user.point || 0,
+                start: <FaStar />,
+              };
+
+              return result;
+            });
+
+            setNewMembers(transformedMembers);
+          } else {
+            setNewMembers(defaultMembers);
+          }
+        } else {
+          setNewMembers(defaultMembers);
         }
       } catch {
-        // Keep using default members if API fails
+        setNewMembers(defaultMembers);
       }
     };
 
     const fetchFeaturedCampaigns = async () => {
       try {
-        const response = await handleAPI<{
-          success: boolean;
-          data: { featuredCampaigns: FeaturedCampaign[] };
-        }>("/campaigns/featured?limit=7", {}, "get");
+        // console.log("Starting to fetch featured campaigns");
+        const response = await handleAPI<
+          ApiResponse<
+            Array<{
+              _id: string;
+              name: string;
+              img?: string;
+              images?: Array<{ imgUrl: string }>;
+              participated: number;
+              organization?: {
+                Inform?: string;
+                logo?: string;
+              };
+              content?: string;
+              location?: string;
+              startDate?: string;
+              endDate?: string;
+              status?: string;
+              targetAmount?: number;
+              currentAmount?: number;
+            }>
+          >
+        >("/campaigns/featured", {}, "get");
 
-        if (response.success && response.data.featuredCampaigns) {
-          // Transform API data to match the component's expected format
-          const transformedCampaigns = response.data.featuredCampaigns.map(
-            (campaign) => {
+        // console.log("Campaigns API Response:", response);
+
+        if (response && response.success && Array.isArray(response.data)) {
+          const featuredCampaigns = response.data;
+          // console.log("Featured campaigns:", featuredCampaigns);
+
+          if (featuredCampaigns.length > 0) {
+            // console.log(`Processing ${featuredCampaigns.length} campaigns`);
+
+            // Transform API data to match the component's expected format
+            const transformedCampaigns = featuredCampaigns.map((campaign) => {
+              // console.log(`Processing campaign ${index + 1}:`, campaign);
+
               // Lấy ảnh từ campaign, ưu tiên images array trước, sau đó là img
               const imageUrl =
                 campaign.images && campaign.images.length > 0
                   ? campaign.images[0].imgUrl
                   : campaign.img || "/src/assets/logos/campaign_default.png";
 
-              return {
+              // Lấy tên tổ chức
+              const orgName =
+                campaign.organization?.Inform || "Tổ chức không xác định";
+
+              const result = {
                 avatar: imageUrl,
                 title: campaign.name || "Chiến dịch",
                 number: campaign.participated || 0,
-                // Thêm thông tin tổ chức nếu có
-                description: campaign.organization?.Inform || "",
+                description: orgName,
+                content: campaign.content || "",
+                location: campaign.location || "",
+                startDate: campaign.startDate || "",
+                endDate: campaign.endDate || "",
+                status: campaign.status || "",
+                targetAmount: campaign.targetAmount || 0,
+                currentAmount: campaign.currentAmount || 0,
               };
-            }
-          );
-
-          setFeaturedCampaigns(transformedCampaigns);
+              return result;
+            });
+            setFeaturedCampaigns(transformedCampaigns);
+          } else {
+            setFeaturedCampaigns(defaultCampaigns);
+          }
+        } else {
+          setFeaturedCampaigns(defaultCampaigns);
         }
       } catch {
-        // Keep using default campaigns if API fails
+        setFeaturedCampaigns(defaultCampaigns);
       }
     };
 
     const fetchFeaturedActivities = async () => {
       try {
         setLoadingActivities(true);
+
         const response = await handleAPI<
-          ApiResponse<FeaturedActivitiesResponse>
+          ApiResponse<
+            Array<{
+              _id: string;
+              name: string;
+              content?: string;
+              organization?: {
+                Inform?: string;
+                logo?: string;
+              };
+              organizationInfo?: {
+                name?: string;
+                logo?: string;
+              };
+              images?: Array<{ imgUrl: string }>;
+              img?: string;
+            }>
+          >
         >("/campaigns/featured-activities?limit=3", {}, "get");
 
-        // Kiểm tra chi tiết hơn cấu trúc response
-        if (response && response.success) {
-          // Kiểm tra chính xác xem featuredActivities có tồn tại và là mảng không
-          const featuredActivities = response.data?.featuredActivities || [];
+        if (response && response.success && Array.isArray(response.data)) {
+          const featuredActivities = response.data;
 
-          if (
-            Array.isArray(featuredActivities) &&
-            featuredActivities.length > 0
-          ) {
-            // Transform API data to match the component's expected format
+          if (featuredActivities.length > 0) {
             const transformedActivities = featuredActivities.map((activity) => {
-              // Lấy ảnh từ activity, ưu tiên images array trước, sau đó là img
               const imageUrl =
                 activity.images && activity.images.length > 0
                   ? activity.images[0].imgUrl
                   : activity.img || "/src/assets/backgrounds/Rectangle 24.png";
 
-              // Cắt nội dung nếu quá dài
-              const shortDescription =
-                activity.content && activity.content.length > 150
-                  ? `${activity.content.substring(0, 150)}...`
-                  : activity.content || "Không có mô tả";
-
-              // Lấy thông tin tổ chức đúng cách
+              let orgLogo = "/src/assets/logos/1.png";
+              if (activity.organizationInfo && activity.organizationInfo.logo) {
+                orgLogo = activity.organizationInfo.logo;
+              } else if (activity.organization && activity.organization.logo) {
+                orgLogo = activity.organization.logo;
+              }
               let orgName = "Tổ chức không xác định";
-              let orgLogo = "/src/assets/logos/avt.png";
-
-              // Thử lấy từ trường organizationInfo (mới)
-              if (activity.organizationInfo) {
-                orgName = activity.organizationInfo.name || orgName;
-                orgLogo = activity.organizationInfo.logo || orgLogo;
-              }
-              // Thử lấy trực tiếp từ trường organization (cũ)
-              else if (
+              if (activity.organizationInfo && activity.organizationInfo.name) {
+                orgName = activity.organizationInfo.name;
+              } else if (
                 activity.organization &&
-                typeof activity.organization === "object"
+                activity.organization.Inform
               ) {
-                orgName = activity.organization.Inform || orgName;
-                orgLogo = activity.organization.logo || orgLogo;
+                orgName = activity.organization.Inform;
               }
 
-              return {
+              const result = {
                 id: activity._id,
                 logo: orgLogo,
                 image: imageUrl,
                 title: orgName,
-                description: shortDescription,
+                description:
+                  activity.content ||
+                  "Không có mô tả cho hoạt động này. Vui lòng tham gia để biết thêm chi tiết.",
               };
+
+              return result;
             });
 
-            if (transformedActivities.length > 0) {
-              setActivities(transformedActivities);
-            }
+            setActivities(transformedActivities);
+          } else {
+            setActivities(defaultActivities);
           }
+        } else {
+          setActivities(defaultActivities);
         }
       } catch {
-        // Keep using default activities if API fails
+        setActivities(defaultActivities);
       } finally {
         setLoadingActivities(false);
       }
@@ -549,7 +603,7 @@ const HomeScreen = () => {
             marginLeft: "11%",
           }}
         >
-          TỔ CHỨC NỔI BẬT
+          CHIẾN DỊCH NỔI BẬT
         </Text>
 
         <FeaturedMembers

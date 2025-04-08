@@ -16,7 +16,7 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
-      toast.error("Vui lòng chọn một file ảnh");
+      console.error("Không có file được chọn");
       return;
     }
 
@@ -34,11 +34,13 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
       }
 
       const data = await response.json();
+      console.log("Upload thành công:", data);
 
       // Call the callback to update avatar in parent component
       onAvatarUpdate(data.avatarUrl);
       toast.success("Cập nhật ảnh đại diện thành công!");
-    } catch {
+    } catch (error) {
+      console.error("Lỗi upload:", error);
       toast.error("Không thể upload ảnh, vui lòng thử lại.");
     }
   };

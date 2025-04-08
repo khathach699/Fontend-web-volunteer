@@ -193,7 +193,8 @@ const ActivityList: React.FC = () => {
           setActivities(sampleData);
         }
         setLoading(false);
-      } catch {
+      } catch (error) {
+        console.error("Error fetching activities:", error);
         setError("Đã xảy ra lỗi khi tải dữ liệu hoạt động");
         // Sử dụng dữ liệu mẫu khi có lỗi
         const sampleData = [

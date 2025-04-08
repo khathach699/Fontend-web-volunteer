@@ -6,8 +6,14 @@ import Admin from "./Admin/Admin";
 import Activity from "./activity/Activity";
 import Organization from "./organization/Organization";
 import Profile from "./profile/Profile";
+import Statistics from "./Admin/Statistics";
+import VolunteerManagement from "./Admin/VolunteerManagement";
+import PostManagement from "./Admin/PostManagement";
+import OriginManagement from "./Admin/OriginManagement";
+import CampainManagement from "./Admin/CampainManagement";
+import HomeScreen from "./home/HomeScreen";
 
-export {
+const index = {
   Login,
   SignUp,
   ForgotPassword,
@@ -16,4 +22,12 @@ export {
   Activity,
   Organization,
   Profile,
+  Statistics,
+  VolunteerManagement,
+  PostManagement,
+  OriginManagement,
+  CampainManagement,
+  HomeScreen,
 };
+
+export default index;
