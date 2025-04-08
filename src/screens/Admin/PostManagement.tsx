@@ -1,6 +1,6 @@
-import AvatarAdmin from "../components/AvatarAdmin";
-import NoDeleteTable from "../components/NoDeleteTable";
-import WaitTable from "../components/WaitTable";
+import AvatarAdmin from "../auth/components/AvatarAdmin";
+import NoDeleteTable from "../auth/components/NoDeleteTable";
+import WaitTable from "../auth/components/WaitTable";
 
 const PostManagement = () => {
   return (

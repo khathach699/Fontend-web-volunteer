@@ -1,6 +1,6 @@
-import AvatarAdmin from "../components/AvatarAdmin";
-import TableAdmin from "../components/TableAdmin";
-import WaitTable from "../components/WaitTable";
+import AvatarAdmin from "../auth/components/AvatarAdmin";
+import TableAdmin from "../auth/components/TableAdmin";
+import WaitTable from "../auth/components/WaitTable";
 
 const OriginManagement = () => {
   return (

@@ -6,15 +6,15 @@ import {
   SignUp,
   ForgotPasswordOTP,
   Admin,
-} from "../screens/auth/index";
+} from "../screens/index";
 import HomeScreen from "../screens/home/HomeScreen";
 import { authSelector, AuthState } from "../reduxs/reducers/authReducer";
 import { useSelector } from "react-redux";
-import Activity from "../screens/auth/Activity";
-import Statistics from "../screens/auth/Admin/Statistics";
-import VolunteerManagement from "../screens/auth/Admin/VolunteerManagement";
-import PostManagement from "../screens/auth/Admin/PostManagement";
-import OriginManagement from "../screens/auth/Admin/OriginManagement";
+import Activity from "../screens/activity/Activity";
+import Statistics from "../screens/Admin/Statistics";
+import VolunteerManagement from "../screens/Admin/VolunteerManagement";
+import PostManagement from "../screens/Admin/PostManagement";
+import OriginManagement from "../screens/Admin/OriginManagement";
 const AuthRouter = () => {
   const auth: AuthState = useSelector(authSelector);
 

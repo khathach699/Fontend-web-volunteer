@@ -1,10 +1,10 @@
 import { Button, Card, Divider, Form, Input, Space, Typography } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import SocialLogin from "./components/SocialLogin";
-import handleAPI from "../../apis/handleAPI";
-import { addAuth } from "../../reduxs/reducers/authReducer";
-import { LoginResponse } from "../../types/auth";
+import SocialLogin from "../components/SocialLogin";
+import handleAPI from "../../../apis/handleAPI";
+import { addAuth } from "../../../reduxs/reducers/authReducer";
+import { LoginResponse } from "../../../apis/loginResponse";
 import { toast } from "react-toastify";
 import { useState } from "react";
 

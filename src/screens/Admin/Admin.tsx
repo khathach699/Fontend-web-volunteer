@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Statistics from "./Admin/Statistics";
-import VolunteerManagement from "./Admin/VolunteerManagement";
-import PostManagement from "./Admin/PostManagement";
-import OriginManagement from "./Admin/OriginManagement";
-import SideBar from "./components/SidebBar";
+import Statistics from "./Statistics";
+import VolunteerManagement from "./VolunteerManagement";
+import PostManagement from "./PostManagement";
+import OriginManagement from "./OriginManagement";
+import SideBar from "../auth/components/SidebBar";
 
 const Admin = () => {
   const [selectedPage, setSelectedPage] = useState("Statistics");

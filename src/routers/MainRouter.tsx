@@ -1,14 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import HomeScreen from "../screens/home/HomeScreen";
-import Admin from "../screens/auth/Admin";
-import Activity from "../screens/auth/Activity";
-import Statistics from "../screens/auth/Admin/Statistics";
-import VolunteerManagement from "../screens/auth/Admin/VolunteerManagement";
-import PostManagement from "../screens/auth/Admin/PostManagement";
-import OriginManagement from "../screens/auth/Admin/OriginManagement";
-import CampainManagement from "../screens/auth/Admin/CampainManagement";
-import Profile from "../screens/auth/Profile";
-import Organization from "../screens/auth/Organization";
+import Admin from "../screens/Admin/Admin";
+import Activity from "../screens/activity/Activity";
+import Statistics from "../screens/Admin/Statistics";
+import VolunteerManagement from "../screens/Admin/VolunteerManagement";
+import PostManagement from "../screens/Admin/PostManagement";
+import OriginManagement from "../screens/Admin/OriginManagement";
+import CampainManagement from "../screens/Admin/CampainManagement";
+import Profile from "../screens/profile/Profile";
+import Organization from "../screens/organization/Organization";
 const MainRouter = () => {
   return (
     <Routes>

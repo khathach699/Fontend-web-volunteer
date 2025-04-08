@@ -1,5 +1,5 @@
-import AvatarAdmin from "../components/AvatarAdmin";
-import TableAdmin from "../components/TableAdmin";
+import AvatarAdmin from "../auth/components/AvatarAdmin";
+import TableAdmin from "../auth/components/TableAdmin";
 
 const VolunteerManagement = () => {
   return (

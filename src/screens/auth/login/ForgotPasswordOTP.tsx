@@ -1,8 +1,8 @@
 import { Button, Card, Divider, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import handleAPI from "../../apis/handleAPI";
-import { LoginResponse } from "../../types/auth";
+import handleAPI from "../../../apis/handleAPI";
+import { LoginResponse } from "../../../apis/loginResponse";
 import { toast } from "react-toastify";
 
 const ForgotPasswordOTP = () => {

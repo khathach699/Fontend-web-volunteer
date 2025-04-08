@@ -1,4 +1,4 @@
-import AvatarAdmin from "../components/AvatarAdmin";
+import AvatarAdmin from "../auth/components/AvatarAdmin";
 
 const Statistics = () => {
   return (

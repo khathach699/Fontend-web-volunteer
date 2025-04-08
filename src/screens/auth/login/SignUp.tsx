@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-import handleAPI from "../../apis/handleAPI";
-import { LoginResponse } from "../../apis/loginResponse";
+import handleAPI from "../../../apis/handleAPI";
+import { LoginResponse } from "../../../apis/loginResponse";
 
 const SignUp = () => {
   const { Title } = Typography;

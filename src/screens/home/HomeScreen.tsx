@@ -6,7 +6,7 @@ import "swiper/css/pagination";
 import { FaStar } from "react-icons/fa";
 import logo from "/src/assets/logos/logo.png";
 import avatar from "/src/assets/backgrounds/Rectangle 9.png";
-import HeaderComponent from "../../components/Header";
+import HeaderComponent from "../../components/common/Header";
 import FeaturedMembers from "./components/FeaturedMembers";
 import { Typography, Spin } from "antd";
 import { useEffect, useState } from "react";

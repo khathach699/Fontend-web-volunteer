@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Spin, Alert } from "antd";
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
-import HeaderComponent from "../../components/Header";
-import handleAPI from "../../apis/handleAPI";
-import ProfileInfo from "../../components/profile/ProfileInfo";
-import ProfileAvatar from "../../components/profile/ProfileAvatar";
-import ActivityList from "../../components/profile/ActivityList";
-import { Volunteer, ApiResponse } from "../../types/profile";
+import HeaderComponent from "../../../components/common/Header";
+import handleAPI from "../../../apis/handleAPI";
+import ProfileInfo from "../../profile/ProfileInfo";
+import ProfileAvatar from "../../profile/ProfileAvatar";
+import ActivityList from "../../profile/ActivityList";
+import { Volunteer, ApiResponse } from "../../../types/profile";
 
 // Define RootState type based on store
 type RootState = {

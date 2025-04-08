@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { removeAuth } from "../reduxs/reducers/authReducer";
+import { removeAuth } from "../../reduxs/reducers/authReducer";
 import { toast } from "react-toastify";
 
 const HeaderComponent = () => {
