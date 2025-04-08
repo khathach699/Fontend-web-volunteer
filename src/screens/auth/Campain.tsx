@@ -1,5 +1,8 @@
 import { useState } from "react";
-import NewPost from "./components/NewPost";
+import ButtonNewForCamp from "./components/ButtonNewForCamp";
+import SearchForCamp from "./components/SearchForCamp";
+import NewCamp from "./components/NewCamp";
+import Camp from "./components/Camp";
 
 const Campain = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,21 +18,23 @@ const Campain = () => {
             <div className="flex flex-col justify-center ">
                 <div className="my-3 flex justify-center z-10">
                     <div onClick={handleOpenModal}>
-                        chiến dịch mới
+                        <ButtonNewForCamp/>
                     </div>
                     <div className="w-5"></div>
+                    <SearchForCamp/>
                 </div>
                 <div className=" flex flex-col items-center justify-center z-10" >
-                    Camp
+                    <Camp/>
+                    <Camp/>
                 </div>
             </div>
             <div>
                 <img className="w-90 opacity-20 top-90 left-50 fixed" src="src/assets/backgrounds/handshake.png" alt="" />
-                <img className="w-90 opacity-20 top-10 right-0 fixed" src="src/assets/backgrounds/public.png" alt="" />
+                <img className="w-90 opacity-20 top-40 right-0 fixed" src="src/assets/backgrounds/public.png" alt="" />
                 <img className="w-90 opacity-20 top-0 left-0 fixed" src="src/assets/backgrounds/volunteer.png" alt="" />
             </div>
 
-            <NewPost isOpen={isModalOpen} onClose={handleCloseModal} />
+            <NewCamp isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
     );
 };
