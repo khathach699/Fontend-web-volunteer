@@ -42,11 +42,10 @@ const OrganizationProfile = () => {
         organizationId: organization.Id,
         follow: !isFollowing,
       })
-      .then((response) => {
-        console.log("Follow status updated:", response.data);
+      .then(() => {
+        // Follow status updated
       })
-      .catch((error) => {
-        console.error("Error updating follow status:", error);
+      .catch(() => {
         setIsFollowing(isFollowing); // Revert state on error
       });
   };
@@ -61,7 +60,6 @@ const OrganizationProfile = () => {
   ) => {
     const file = e.target.files?.[0];
     if (!file) {
-      console.error("Không có file được chọn");
       return;
     }
 
@@ -79,14 +77,13 @@ const OrganizationProfile = () => {
       }
 
       const data = await response.json();
-      console.log("Upload thành công:", data);
 
       setOrganization((prev) => ({
         ...prev,
         avatar: data.avatarUrl,
       }));
-    } catch (error) {
-      console.error("Lỗi upload:", error);
+    } catch {
+      // Handle error silently
     }
   };
 
@@ -96,8 +93,8 @@ const OrganizationProfile = () => {
       .then((response) => {
         setOrganization(response.data);
       })
-      .catch((error) => {
-        console.error("Error loading organization data:", error);
+      .catch(() => {
+        // Handle error silently
       });
   }, []);
 
