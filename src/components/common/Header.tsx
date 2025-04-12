@@ -71,7 +71,10 @@ const HeaderComponent = () => {
           <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
             Tình Nguyện
           </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
+          <Link
+            to="/notification"
+            style={{ color: "#40513B", marginRight: "40px" }}
+          >
             Thông báo
           </Link>
         </div>

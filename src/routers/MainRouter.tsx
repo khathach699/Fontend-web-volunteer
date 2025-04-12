@@ -20,6 +20,8 @@ const MainRouter = () => {
         path="/admin/originmanagement"
         element={<index.OriginManagement />}
       />
+      <Route path="/notification" element={<index.Nonti />} />
+      <Route path="/Changepassword" element={<index.ChangePassword />} />
       <Route path="/profile" element={<index.Profile />} />
       <Route path="/organization" element={<index.Organization />} />
       <Route path="*" element={<index.HomeScreen />} />

@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import HeaderComponent from "../../components/common/Header";
 import handleAPI from "../../apis/handleAPI";
-import ProfileInfo from "../../components/profile/ProfileInfo";
-import ProfileAvatar from "../../components/profile/ProfileAvatar";
-import ActivityList from "../../components/profile/ActivityList";
+import ProfileInfo from "./ProfileInfo";
+import ProfileAvatar from "./ProfileAvatar";
+import ActivityList from "./ActivityList";
 import { Volunteer, ApiResponse } from "../../types/profile";
 
 // Define RootState type based on store
