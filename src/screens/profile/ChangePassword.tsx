@@ -1,49 +1,59 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { Form, Input } from "antd";
+import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 import Header from "../../components/common/Header";
 import ProfileSidebar from "../auth/components/ProfileSidebar";
 import style from "../../types/style";
+import handleAPI from "../../apis/handleAPI";
+import { toast } from "react-toastify";
+
+// Define RootState type based on store
+type RootState = {
+  authReducer: {
+    data: {
+      token: string;
+      _id: string;
+      name: string;
+      rule: number;
+    };
+  };
+};
 
 const ChangePassword = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [otp, setOtp] = useState("");
+  const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
+  const token = useSelector((state: RootState) => state.authReducer.data.token);
 
-  const handleImageUpload = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      console.log("Image uploaded:", file, "ID:", id);
-    }
-  };
-
-  const handleSendOtp = () => {
-    console.log("Gửi OTP...");
-  };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  const handleSubmit = async (values: any) => {
     try {
-      const response = await axios.post("/api/change-password", {
-        currentPassword,
-        newPassword,
-      });
-      setSuccess("Password changed successfully");
-    } catch (err) {
-      setError("Failed to change password");
+      setIsLoading(true);
+      const decoded = jwtDecode<{ id: string }>(token);
+      const userId = decoded.id;
+      console.log("UserId" + userId);
+
+      const payload = {
+        userId: userId,
+        oldPassword: values.password,
+        newPassword: values.confirmPassword,
+      };
+
+      await handleAPI("/auth/resetPasswordNotOtp", payload, "post");
+      toast.success("Đổi mật khẩu thành công!");
+      form.resetFields();
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null && "message" in error) {
+        const e = error as { message?: string };
+        toast.error(e.message || "Có lỗi xảy ra khi đổi mật khẩu");
+        return;
+      }
+      toast.error("Đã xảy ra lỗi không xác định!");
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <div
       style={{
@@ -67,135 +77,112 @@ const ChangePassword = () => {
       >
         <ProfileSidebar
           organization={{ name: "Default Organization" }}
-          handleImageUpload={handleImageUpload}
+          handleImageUpload={(e, id) => {}}
           style={style}
         />
 
         <div
           className="col-12 col-md-6"
-          style={{ display: "flex", flexDirection: "column" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          }}
         >
-          <form
-            onSubmit={handleSubmit}
-            style={{
-              border: "2px solid #40513B",
-              padding: "20px",
-              backgroundColor: "#fff",
-              borderRadius: "20px",
-              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-            }}
+          <Form
+            layout="vertical"
+            form={form}
+            size="large"
+            onFinish={handleSubmit}
           >
-            {" "}
-            {/* Mật khẩu cũ */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "5px" }}>
-                Mật khẩu cũ
-              </label>
-              <input
-                type="password"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-                placeholder="Vui lòng nhập mật khẩu cũ"
+            <Form.Item
+              name="password"
+              label="Mật Khẩu Cũ"
+              rules={[
+                { required: true, message: "Mật khẩu không được để trống!" },
+                {
+                  validator: (_, value) =>
+                    value && value.length >= 6
+                      ? Promise.resolve()
+                      : Promise.reject(
+                          new Error("Mật khẩu phải chứa ít nhất 6 ký tự!")
+                        ),
+                },
+              ]}
+            >
+              <Input.Password
+                maxLength={100}
+                placeholder="Vui lòng nhập mật khẩu cũ!"
                 style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "20px",
+                  borderRadius: 50,
                   border: "2px solid #609966",
-                  backgroundColor: "#EDF1D6",
+                  width: "100%",
+                  height: 60,
+                  paddingLeft: 15,
                 }}
               />
-            </div>
-            {/* Mật khẩu mới */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "5px" }}>
-                Mật khẩu mới
-              </label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Vui lòng nhập mật khẩu mới"
+            </Form.Item>
+
+            <Form.Item
+              name="confirmPassword"
+              label="Mật Khẩu Mới"
+              rules={[
+                {
+                  required: true,
+                  message: "Mật khẩu mới không được để trống!",
+                },
+                {
+                  validator: (_, value) =>
+                    value && value.length >= 6
+                      ? Promise.resolve()
+                      : Promise.reject(
+                          new Error("Mật khẩu phải chứa ít nhất 6 ký tự!")
+                        ),
+                },
+              ]}
+            >
+              <Input.Password
+                allowClear
+                maxLength={100}
+                placeholder="Vui lòng nhập mật khẩu mới!"
                 style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "20px",
+                  borderRadius: 50,
                   border: "2px solid #609966",
-                  backgroundColor: "#EDF1D6",
+                  width: "100%",
+                  height: 60,
+                  paddingLeft: 15,
                 }}
               />
-            </div>
-            {/* Nhập lại mật khẩu mới */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "5px" }}>
-                Nhập lại mật khẩu mới
-              </label>
-              <input
-                type="password"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                placeholder="Vui lòng nhập lại mật khẩu mới"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "20px",
-                  border: "2px solid #609966",
-                  backgroundColor: "#EDF1D6",
-                }}
-              />
-            </div>
-            {/* Nút Gửi OTP */}
-            <div style={{ marginBottom: "20px" }}>
+            </Form.Item>
+
+            <Form.Item>
               <button
-                type="button"
-                onClick={handleSendOtp}
+                type="submit"
+                disabled={isLoading}
                 style={{
-                  backgroundColor: "#EDF1D6", // Màu xám nhạt
-                  border: "2px solid #609966",
-                  borderRadius: "20px",
-                  padding: "5px 15px",
-                  fontSize: "14px",
-                  color: "#333",
-                  cursor: "pointer",
+                  backgroundColor: "#609966",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "50px",
+                  width: "100%",
+                  height: "60px",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  cursor: isLoading ? "not-allowed" : "pointer",
+                  opacity: isLoading ? 0.7 : 1,
                 }}
               >
-                Gửi OTP
+                {isLoading ? "Đang xử lý..." : "Đổi mật khẩu"}
               </button>
-            </div>
-            {/* Nhập OTP */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", marginBottom: "5px" }}>
-                Nhập OTP:
-              </label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="Nhập OTP"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "20px",
-                  border: "2px solid #609966",
-                  backgroundColor: "#EDF1D6",
-                }}
-              />
-            </div>
-            {/* Nút Đổi - Đẩy sang bên phải */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "20px",
-              }}
-            >
-              <button type="submit" style={style.viewMoreButton}>
-                Đổi
-              </button>
-            </div>
-          </form>
+            </Form.Item>
+          </Form>
         </div>
       </div>
     </div>
   );
 };
+
 export default ChangePassword;
