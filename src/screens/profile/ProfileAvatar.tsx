@@ -1,6 +1,8 @@
 import React from "react";
 import { EditOutlined as Pencil } from "@ant-design/icons";
 import { toast } from "react-toastify";
+import handleAPI from "../../apis/handleAPI";
+import { UploadResponse } from "../../apis/uploadResponse"; // Import the new type
 
 interface ProfileAvatarProps {
   avatarUrl?: string;
@@ -24,20 +26,23 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
     formData.append("avatar", file);
 
     try {
-      const response = await fetch(`/api/upload-avatar/${userId}`, {
-        method: "POST",
-        body: formData,
-      });
+      // Use our API endpoint to upload the avatar
+      const api = `/users/upload-avatar/${userId}`;
+      const response = await handleAPI<UploadResponse>(
+        api,
+        formData,
+        "post",
+        true
+      );
 
-      if (!response.ok) {
-        throw new Error("Lỗi khi upload ảnh");
+      if (!response.success) {
+        throw new Error(response.message || "Lỗi khi upload ảnh");
       }
 
-      const data = await response.json();
-      console.log("Upload thành công:", data);
+      console.log("Upload thành công:", response);
 
-      // Call the callback to update avatar in parent component
-      onAvatarUpdate(data.avatarUrl);
+      // Use the avatar URL from the response
+      onAvatarUpdate(response.data.avatarUrl);
       toast.success("Cập nhật ảnh đại diện thành công!");
     } catch (error) {
       console.error("Lỗi upload:", error);
