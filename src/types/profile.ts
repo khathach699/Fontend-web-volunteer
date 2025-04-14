@@ -35,8 +35,6 @@ export interface ListVolunteerResponse {
   };
 }
 
-
-
 export interface Activity {
   name: string;
   points: number;
