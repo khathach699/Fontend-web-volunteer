@@ -1,16 +1,17 @@
 import AvatarAdmin from "../auth/components/AvatarAdmin";
+import "./Statistics.css";
 
-const Statistics = () => {
-  return (
-    <div>
-      <div className="flex p-4 bg-white border-2 border-black rounded-2xl justify-between ">
-        <h2 className="font-bold m-0">THỐNG KÊ</h2>
-        <div className="justify-self-end mr-[20]">
-          <AvatarAdmin />
+const Statistics = () =>{
+    return (
+        <div>
+            <div className="statistics-header-container">
+                <h2 className="statistics-header-title">THỐNG KÊ</h2>
+                <div className="statistics-header-avatar">
+                    <AvatarAdmin />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-};
+    );
+}
 
 export default Statistics;

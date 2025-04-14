@@ -12,6 +12,7 @@ import PostManagement from "./Admin/PostManagement";
 import OriginManagement from "./Admin/OriginManagement";
 import CampainManagement from "./Admin/CampainManagement";
 import HomeScreen from "./home/HomeScreen";
+import Campaign from "./camp/Campaign";
 
 const index = {
   Login,
@@ -28,6 +29,7 @@ const index = {
   OriginManagement,
   CampainManagement,
   HomeScreen,
+  Campaign
 };
 
 export default index;

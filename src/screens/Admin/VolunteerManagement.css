@@ -1,0 +1,52 @@
+/* VolunteerManagement.css */
+
+/* Phần header */
+.vm-header-container {
+    display: flex;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 1rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vm-header-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.vm-header-avatar {
+    justify-self: end;
+    margin-right: 20px;
+}
+
+/* Phần nút */
+.vm-action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.vm-button-group {
+    display: flex;
+    align-items: center;
+}
+
+.vm-button {
+    color: black;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: 1px solid black;
+    background-color: #9DC08B;
+    border-radius: 1.5rem;
+    cursor: pointer;
+}
+
+/* Phần tiêu đề danh sách */
+.vm-list-title {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    font-weight: bold;
+}

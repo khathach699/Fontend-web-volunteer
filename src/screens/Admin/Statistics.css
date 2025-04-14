@@ -1,0 +1,20 @@
+/* StatisticsHeader.css */
+.statistics-header-container {
+    display: flex;
+    padding: 1rem; /* tương đương p-4 */
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 1rem; /* tương đương rounded-2xl */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statistics-header-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.statistics-header-avatar {
+    justify-self: end;
+    margin-right: 20px; /* tương đương mr-[20] */
+}
