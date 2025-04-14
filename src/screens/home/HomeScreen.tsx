@@ -12,41 +12,12 @@ import { Typography, Spin } from "antd";
 import { useEffect, useState } from "react";
 import handleAPI from "../../apis/handleAPI";
 
-// Add interface for featured user
-// interface FeaturedUser {
-//   _id: string;
-//   fullname: string;
-//   avatar?: string;
-//   point: number;
-// }
-
-// Interface for API response
 interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
 }
 
-// Interface for featured campaign
-// interface FeaturedCampaign {
-//   id: string;
-//   name: string;
-//   img?: string;
-//   images?: Array<{ imgUrl: string }>;
-//   participated: number;
-//   organization?: {
-//     Inform: string;
-//   };
-//   content?: string;
-//   location?: string;
-//   startDate?: string;
-//   endDate?: string;
-//   status?: string;
-//   targetAmount?: number;
-//   currentAmount?: number;
-// }
-
-// Define interface for activity items
 interface ActivityItem {
   id: string | number;
   logo: string;
@@ -231,7 +202,7 @@ const HomeScreen = () => {
                 Inform?: string;
                 logo?: string;
               };
-              content?: string;
+              text?: string;
               location?: string;
               startDate?: string;
               endDate?: string;
@@ -246,7 +217,7 @@ const HomeScreen = () => {
 
         if (response && response.success && Array.isArray(response.data)) {
           const featuredCampaigns = response.data;
-          // console.log("Featured campaigns:", featuredCampaigns);
+          console.log("Featured campaigns:", featuredCampaigns);
 
           if (featuredCampaigns.length > 0) {
             // console.log(`Processing ${featuredCampaigns.length} campaigns`);
@@ -270,7 +241,7 @@ const HomeScreen = () => {
                 title: campaign.name || "Chiến dịch",
                 number: campaign.participated || 0,
                 description: orgName,
-                content: campaign.content || "",
+                text: campaign.text || "",
                 location: campaign.location || "",
                 startDate: campaign.startDate || "",
                 endDate: campaign.endDate || "",
@@ -301,12 +272,9 @@ const HomeScreen = () => {
             Array<{
               _id: string;
               name: string;
-              content?: string;
+              text?: string;
+
               organization?: {
-                Inform?: string;
-                logo?: string;
-              };
-              organizationInfo?: {
                 name?: string;
                 logo?: string;
               };
@@ -327,29 +295,16 @@ const HomeScreen = () => {
                   : activity.img || "/src/assets/backgrounds/Rectangle 24.png";
 
               let orgLogo = "/src/assets/logos/1.png";
-              if (activity.organizationInfo && activity.organizationInfo.logo) {
-                orgLogo = activity.organizationInfo.logo;
-              } else if (activity.organization && activity.organization.logo) {
+              if (activity.organization && activity.organization.logo) {
                 orgLogo = activity.organization.logo;
-              }
-              let orgName = "Tổ chức không xác định";
-              if (activity.organizationInfo && activity.organizationInfo.name) {
-                orgName = activity.organizationInfo.name;
-              } else if (
-                activity.organization &&
-                activity.organization.Inform
-              ) {
-                orgName = activity.organization.Inform;
               }
 
               const result = {
                 id: activity._id,
                 logo: orgLogo,
                 image: imageUrl,
-                title: orgName,
-                description:
-                  activity.content ||
-                  "Không có mô tả cho hoạt động này. Vui lòng tham gia để biết thêm chi tiết.",
+                title: activity.name || "",
+                description: activity.text || "",
               };
 
               return result;

@@ -8,41 +8,34 @@ import handleAPI from "../../apis/handleAPI";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 interface Organization {
-  Inform: string;
-  UserID: string;
-  _id?: string;
+  _id: string;
+  info: string;
 }
 
 interface Campaign {
   _id: string;
   name: string;
   organization: Organization | null;
-  content: string;
-  numberOfPeople: number;
-  amountOfMoney: number;
-  donate: number;
-  isAccepted: boolean;
-  isdeleted: boolean;
-  dayStart: string;
-  numberOfDay: number;
-  participated: number;
-  img: string;
-  images: {
-    _id: string;
-    imgUrl: string;
-    isdeleted: boolean;
-    CampID: string;
-  }[];
+  Text?: string;
+  img: string | null;
+}
+
+interface State {
+  _id: string;
+  name: string;
 }
 
 interface MemberCampaign {
   _id: string;
-  UserID: string;
-  CampID: string;
-  StatusID: number;
-  IsDelete: number;
-  CreatedAt: string;
+  user: {
+    _id: string;
+    fullname: string;
+  };
   campaign: Campaign;
+  state: State;
+  isdeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface ActivityProps {
@@ -66,19 +59,6 @@ type RootState = {
   };
 };
 
-const getStatusFromStatusID = (statusID: number): string => {
-  switch (statusID) {
-    case 1:
-      return "Hoàn thành";
-    case 2:
-      return "Đang thực hiện";
-    case 3:
-      return "Không hoàn thành";
-    default:
-      return "Không xác định";
-  }
-};
-
 const ActivityList: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [activities, setActivities] = useState<ActivityProps[]>([]);
@@ -96,17 +76,24 @@ const ActivityList: React.FC = () => {
         const userId = decoded.id;
 
         // Fetch member-campaign records for the user
-        const api = "/member-campaign/user";
+        const api = `/member-campaign/my-campaign/${userId}`;
+        console.log("Making API request to:", api);
+
         const res = await handleAPI<{
           success: boolean;
-          data: { memberCampaigns: MemberCampaign[] };
-        }>(api, { userId }, "post");
+          data: {
+            participated: MemberCampaign[];
+            total: number;
+            totalPages: number;
+            currentPage: number;
+          };
+        }>(api, {}, "get");
 
-        if (res.success && res.data.memberCampaigns) {
-          console.log("API response:", res.data.memberCampaigns);
+        if (res.success && res.data.participated) {
+          console.log("API response:", res.data.participated);
 
           // Nếu không có dữ liệu, sử dụng dữ liệu mẫu để hiển thị
-          if (res.data.memberCampaigns.length === 0) {
+          if (res.data.participated.length === 0) {
             console.log("No data from API, using sample data");
             const sampleData = [
               {
@@ -135,27 +122,24 @@ const ActivityList: React.FC = () => {
             setActivities(sampleData);
           } else {
             // Transform the data to match ActivityProps interface
-            const transformedActivities = res.data.memberCampaigns.map((mc) => {
+            const transformedActivities = res.data.participated.map((mc) => {
               const campaign = mc.campaign;
 
-              // Lấy status từ StatusID
-              const status = getStatusFromStatusID(mc.StatusID);
-              const isCompleted = status === "Hoàn thành";
+              // Lấy status từ state
+              const status = mc.state?.name || "Không xác định";
+              const isCompleted = status === "Completed";
 
-              // Lấy hình ảnh từ campaign.images hoặc campaign.img
-              const imageUrl =
-                campaign && campaign.images && campaign.images.length > 0
-                  ? campaign.images[0].imgUrl
-                  : campaign?.img || undefined;
+              // Lấy hình ảnh từ campaign.img
+              const imageUrl = campaign?.img || undefined;
 
               // Tạo dữ liệu cho activity
               return {
                 name: campaign?.name || "Chiến dịch không xác định",
-                points: campaign?.participated || 50,
+                points: 50, // Sử dụng một giá trị mặc định hoặc từ API nếu có
                 status: status,
                 completed: isCompleted,
                 orgname:
-                  campaign?.organization?.Inform || "Tổ chức không xác định",
+                  campaign?.organization?.info || "Tổ chức không xác định",
                 imageUrl: imageUrl,
               };
             });
@@ -239,22 +223,20 @@ const ActivityList: React.FC = () => {
       setActivities(allActivities);
     } else if (filter === "completed") {
       setActivities(
-        allActivities.filter(
-          (activity) =>
-            activity.status.toLowerCase().includes("hoàn thành") &&
-            !activity.status.toLowerCase().includes("không")
+        allActivities.filter((activity) =>
+          activity.status.toLowerCase().includes("completed")
         )
       );
     } else if (filter === "in-progress") {
       setActivities(
         allActivities.filter((activity) =>
-          activity.status.toLowerCase().includes("đang thực hiện")
+          activity.status.toLowerCase().includes("in progress")
         )
       );
     } else if (filter === "incomplete") {
       setActivities(
         allActivities.filter((activity) =>
-          activity.status.toLowerCase().includes("không hoàn thành")
+          activity.status.toLowerCase().includes("uncompleted")
         )
       );
     }
@@ -318,7 +300,7 @@ const ActivityList: React.FC = () => {
                     setOpen(false);
                   }}
                 >
-                  Đã hoàn thành
+                  Completed
                 </button>
                 <button
                   className="dropdown-item"
@@ -327,7 +309,7 @@ const ActivityList: React.FC = () => {
                     setOpen(false);
                   }}
                 >
-                  Đang thực hiện
+                  In Progress
                 </button>
                 <button
                   className="dropdown-item"
@@ -336,7 +318,7 @@ const ActivityList: React.FC = () => {
                     setOpen(false);
                   }}
                 >
-                  Không hoàn thành
+                  Uncompleted
                 </button>
               </div>
             )}
@@ -360,17 +342,17 @@ const ActivityItem: React.FC<{ activity: ActivityProps }> = ({ activity }) => {
   const getStatusColor = (status: string = "") => {
     const statusLower = status.toLowerCase();
 
-    if (statusLower.includes("hoàn thành") && !statusLower.includes("không")) {
+    if (statusLower.includes("completed")) {
       return {
         text: "#4CAF50", // Màu xanh cho văn bản
         bg: "rgba(76, 175, 80, 0.1)", // Màu xanh nhạt cho nền
       };
-    } else if (statusLower.includes("đang thực hiện")) {
+    } else if (statusLower.includes("in progress")) {
       return {
         text: "#FFC107", // Màu vàng cho văn bản
         bg: "rgba(255, 193, 7, 0.1)", // Màu vàng nhạt cho nền
       };
-    } else if (statusLower.includes("không hoàn thành")) {
+    } else if (statusLower.includes("uncompleted")) {
       return {
         text: "#FF0000", // Màu đỏ cho văn bản
         bg: "rgba(255, 0, 0, 0.1)", // Màu đỏ nhạt cho nền
@@ -500,10 +482,10 @@ const ActivityItem: React.FC<{ activity: ActivityProps }> = ({ activity }) => {
             borderRadius: "5px",
           }}
         >
-          {(activity.status || "").toLowerCase().includes("hoàn thành") && (
+          {(activity.status || "").toLowerCase().includes("completed") && (
             <FaCheck style={{ marginRight: "5px" }} />
           )}
-          {activity.status || "Đang xử lý"}
+          {activity.status || "Processing"}
         </span>
       </div>
     </div>

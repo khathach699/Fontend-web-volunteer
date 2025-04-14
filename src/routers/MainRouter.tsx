@@ -20,6 +20,7 @@ const MainRouter = () => {
         path="/admin/originmanagement"
         element={<index.OriginManagement />}
       />
+      <Route path="/upfile" element={<index.Upfile />} />
       <Route path="/notification" element={<index.Nonti />} />
       <Route path="/Changepassword" element={<index.ChangePassword />} />
       <Route path="/profile" element={<index.Profile />} />

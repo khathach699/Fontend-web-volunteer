@@ -1,22 +1,87 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 
-interface OrganizationPostProps {
-  organization: {
-    name: string;
-    time: string;
-    content: string;
-    avatar: string;
-    images: string[];
-  };
-  showAllImages: boolean;
-  setShowAllImages: (show: boolean) => void;
+interface Campaign {
+  _id: string;
+  name: string;
+  Text?: string;
+  content?: string;
+  NumberOfPeople: number;
+  AmountOfMoney: number;
+  Donated: number;
+  IsAccepted: boolean;
+  IsDeleted: boolean;
+  Start: string;
+  NumberOfDay: number;
+  participated: number;
+  organization: string;
+  img: string | null;
 }
 
-const OrganizationPost: React.FC<OrganizationPostProps> = ({
-  organization,
-  showAllImages,
-  setShowAllImages,
-}) => {
+interface OrganizationData {
+  info: string;
+  totalCampaigns: number;
+  recentCampaigns: Campaign[];
+}
+
+interface RootState {
+  authReducer: {
+    data: {
+      token: string;
+      _id: string;
+      name: string;
+      rule: number;
+    };
+  };
+}
+
+const OrganizationPost: React.FC = () => {
+  const token = useSelector((state: RootState) => state.authReducer.data.token);
+  const [organizationData, setOrganizationData] =
+    useState<OrganizationData | null>(null);
+  const [showAllImages, setShowAllImages] = useState(false);
+
+  useEffect(() => {
+    const fetchOrganizationData = async () => {
+      try {
+        console.log("Starting API call with token:", token);
+        const decoded = jwtDecode<{ id: string }>(token);
+        const userId = decoded.id;
+        console.log("Decoded userId:", userId);
+
+        const response = await fetch(
+          `http://localhost:3001/organizations/organizationUserid/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("API response status:", response.status);
+        const result = await response.json();
+        console.log("API response data:", result);
+
+        if (result.success) {
+          console.log("Setting organization data:", result.data);
+          setOrganizationData(result.data);
+        } else {
+          console.log("API returned success: false", result);
+        }
+      } catch (error) {
+        console.error("Error fetching organization data:", error);
+      }
+    };
+
+    if (token) {
+      console.log("Token exists, fetching data...");
+      fetchOrganizationData();
+    } else {
+      console.log("No token found");
+    }
+  }, [token]);
+
   const style = {
     viewMoreButton: {
       backgroundColor: "#609966",
@@ -30,6 +95,15 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
       display: "block",
     },
   };
+
+  console.log("Current organizationData:", organizationData);
+
+  if (!organizationData) {
+    return <div>Loading...</div>;
+  }
+
+  const campaign = organizationData.recentCampaigns[0] || {};
+  console.log("Selected campaign:", campaign);
 
   return (
     <div>
@@ -45,7 +119,7 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
       </h2>
       <div
         style={{
-          position: "absolute",
+          position: "relative",
           border: "2px solid #609966",
           backgroundColor: "#fff",
           borderRadius: "10px",
@@ -71,7 +145,7 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
               }}
             >
               <img
-                src={organization.avatar || "src/assets/logos/avt.png"}
+                src={campaign.img || "src/assets/logos/avt.png"}
                 alt="avatar"
                 style={{
                   width: "100%",
@@ -89,10 +163,11 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
                   color: "#333",
                 }}
               >
-                {organization.name || "Tổ chức Beta"}
+                {campaign.name || "Tổ chức Beta"}
               </h3>
               <span style={{ fontSize: "12px", color: "#999" }}>
-                {organization.time || "5 phút trước"}
+                {new Date(campaign.Start).toLocaleDateString() ||
+                  "5 phút trước"}
               </span>
             </div>
           </div>
@@ -103,8 +178,7 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
               marginBottom: "10px",
             }}
           >
-            {organization.content ||
-              "Thăng vừa qua chiến tổi đã có những hoạt động vô cùng ý nghĩa. Cảm ơn các bạn tình nguyện viên đã cùng tổi vượt qua chiến dịch này. Những chiến dịch tiếp theo sẽ sớm được bắt đầu, hãy cùng đón chờ nhé!"}
+            {campaign.Text || campaign.content || organizationData.info}
           </p>
           {showAllImages ? (
             <div
@@ -114,11 +188,10 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
                 gap: "10px",
               }}
             >
-              {(organization.images || []).map((image, index) => (
+              {campaign.img && (
                 <img
-                  key={index}
-                  src={image}
-                  alt={`postimage-${index}`}
+                  src={campaign.img}
+                  alt="campaign"
                   style={{
                     width: "100%",
                     borderRadius: "5px",
@@ -126,7 +199,7 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
                     maxHeight: "150px",
                   }}
                 />
-              ))}
+              )}
               <button
                 onClick={() => setShowAllImages(false)}
                 style={style.viewMoreButton}
@@ -136,36 +209,16 @@ const OrganizationPost: React.FC<OrganizationPostProps> = ({
             </div>
           ) : (
             <div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <img
-                    key={index}
-                    src={
-                      organization.images && organization.images[index]
-                        ? organization.images[index]
-                        : "src/assets/logos/avt.png"
-                    }
-                    alt="postimage"
-                    style={{
-                      width: "30%",
-                      borderRadius: "5px",
-                      objectFit: "cover",
-                    }}
-                  />
-                ))}
-              </div>
-              {organization.images && organization.images.length > 3 && (
-                <button
-                  onClick={() => setShowAllImages(true)}
-                  style={style.viewMoreButton}
-                >
-                  Xem thêm ảnh ({organization.images.length - 3} ảnh)
-                </button>
+              {campaign.img && (
+                <img
+                  src={campaign.img}
+                  alt="campaign"
+                  style={{
+                    width: "30%",
+                    borderRadius: "5px",
+                    objectFit: "cover",
+                  }}
+                />
               )}
             </div>
           )}

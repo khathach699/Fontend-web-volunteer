@@ -106,8 +106,11 @@ const HeaderComponent = () => {
                 <Link to="/Profile" className="dropdown-item ">
                   Thông tin cá nhân
                 </Link>
-                <Link to="/Setting" className="dropdown-item ">
+                <Link to="/upfile" className="dropdown-item ">
                   Nâng cấp lên tổ chức
+                </Link>
+                <Link to="/organization" className="dropdown-item ">
+                  Tổ chức của tôi
                 </Link>
                 <Link to="/Changepassword" className="dropdown-item ">
                   Đổi mật khẩu

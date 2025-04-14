@@ -5,11 +5,13 @@ const handleAPI = async <T>(
   url: string,
   data?: Record<string, unknown> | FormData,
   method: "post" | "put" | "get" | "delete" = "get",
-  isFormData: boolean = false
+  isFormData: boolean = false,
+  headers?: Record<string, string>
 ): Promise<T> => {
   const config: AxiosRequestConfig = {
     url,
     method,
+    headers,
   };
 
   if (method !== "get" && data) {
