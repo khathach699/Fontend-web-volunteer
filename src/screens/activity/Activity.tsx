@@ -1,18 +1,43 @@
 import Search from "../auth/components/Search";
 import ButtonNew from "../auth/components/ButtonNew";
 import Post from "../auth/components/post";
+import { useState } from "react";
+import HeaderComponent from "../../components/common/Header";
+import NewPost from "./component/NewPost";
+import "./Activity.css";
 
 const Activity = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
   return (
-    <div className="w-screen h-screen flex-col justify-center items-center bg-[#EDF1D6]">
-      <div className="w-screen h-20 bg-amber-600 justify-center">header</div>
-      <div className="flex-col justify-center items-center p-3">
-        <div className="my-3 flex">
-          <ButtonNew />
+    <div className="activity-container">
+      <div className="header-wrapper">
+        <HeaderComponent />
+      </div>
+      <div className="content-wrapper">
+        <div className="controls">
+          <div onClick={handleOpenModal}>
+            <ButtonNew />
+          </div>
+          <div className="spacer"></div>
           <Search />
         </div>
-        <Post />
+        <div className="posts-wrapper">
+          <Post />
+          <Post />
+          <Post />
+        </div>
       </div>
+      <div>
+        <img className="background-image bg-handshake" src="src/assets/backgrounds/handshake.png" alt="" />
+        <img className="background-image bg-public" src="src/assets/backgrounds/public.png" alt="" />
+        <img className="background-image bg-volunteer" src="src/assets/backgrounds/volunteer.png" alt="" />
+      </div>
+
+      <NewPost isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

@@ -1,0 +1,52 @@
+/* CampainManagement.css */
+
+/* Header */
+.cm-header-container {
+    display: flex;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 1rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cm-header-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.cm-header-avatar {
+    justify-self: end;
+    margin-right: 20px;
+}
+
+/* Nút chung */
+.cm-button {
+    color: black;
+    padding: 0.5rem 1rem;
+    border: 1px solid black;
+    border-radius: 1.5rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    background-color: #9DC08B;
+}
+
+.cm-button-white {
+    background-color: white;
+    margin-right: 0.5rem;
+}
+
+/* Khu vực chứa nút */
+.cm-button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Tiêu đề phần danh sách */
+.cm-section-title {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    font-weight: bold;
+}

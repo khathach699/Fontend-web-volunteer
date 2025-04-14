@@ -23,6 +23,20 @@ export interface ApiResponse {
   };
 }
 
+export interface ListVolunteerResponse {
+  success: boolean;
+  data: {
+    result: {
+      users: Volunteer[];
+      total: number;
+      totalPages: number;
+      currentPage: number;
+    };
+  };
+}
+
+
+
 export interface Activity {
   name: string;
   points: number;

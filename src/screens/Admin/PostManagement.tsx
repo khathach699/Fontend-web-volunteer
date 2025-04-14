@@ -1,44 +1,38 @@
+import React from "react";
+import "./PostManagement.css";
 import AvatarAdmin from "../auth/components/AvatarAdmin";
 import NoDeleteTable from "../auth/components/NoDeleteTable";
 import WaitTable from "../auth/components/WaitTable";
 
-const PostManagement = () => {
+const PostManager: React.FC = () => {
   return (
-    <div>
-      <div className="flex p-4 bg-white border-1 border-black rounded-2xl justify-between ">
-        <h2 className="font-bold m-0">QUẢN LÝ BÀI ĐĂNG</h2>
-        <div className="justify-self-end mr-[20]">
+    <div className="page-container">
+      <div className="page-header">
+        <h2>QUẢN LÝ BÀI ĐĂNG</h2>
+        <div className="avatar-section">
           <AvatarAdmin />
         </div>
       </div>
-      <div className="flex justify-end">
-        <button
-          className="text-black px-4 py-2 rounded-3xl mt-4"
-          style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
-        >
-          XUẤT EXCEL
-        </button>
+
+      <div className="btn-group">
+        <button className="btn btn-export">XUẤT EXCEL</button>
       </div>
-      <div className="flex justify-start ">DANH SÁCH BÀI ĐĂNG</div>
+
+      <div className="section-title">DANH SÁCH BÀI ĐĂNG</div>
       <NoDeleteTable />
-      <div className="flex justify-end">
-        <button
-          className="text-black px-4 py-2 mr-2 rounded-3xl mt-4 bg-white"
-          style={{ border: "1px solid black" }}
-        >
-          KHÔNG CHẤP NHẬN
-        </button>
-        <button
-          className="text-black px-4 py-2 rounded-3xl mt-4"
-          style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
-        >
-          DUYỆT
-        </button>
+      <br />
+
+      <div className="om-approve-buttons">
+        <div className="om-button-group">
+          <button className="om-button om-button-white">KHÔNG DUYỆT</button>
+          <button className="om-button">DUYỆT</button>
+        </div>
       </div>
-      <div className="flex justify-start ">CÁC BÀI ĐĂNG ĐANG CHỜ DUYỆT</div>
+
+      <div className="section-title">CÁC BÀI ĐĂNG ĐANG CHỜ DUYỆT</div>
       <WaitTable />
     </div>
   );
 };
 
-export default PostManagement;
+export default PostManager;

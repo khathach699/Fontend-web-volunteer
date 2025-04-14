@@ -1,0 +1,59 @@
+/* PostManager.css */
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.page-header {
+  display: flex;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h2 {
+  font-weight: bold;
+  margin: 0;
+}
+
+.page-header .avatar-section {
+  margin-right: 20px;
+}
+
+.section-title {
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.btn {
+  color: black;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  border: 1px solid black;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-approve {
+  background-color: #9dc08b;
+}
+
+.btn-white {
+  background-color: white;
+}
+
+.btn-export {
+  margin-top: 1rem;
+  background-color: #9dc08b;
+}

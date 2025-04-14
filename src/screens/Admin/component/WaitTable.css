@@ -1,0 +1,96 @@
+/* WaitTable.css */
+
+.wait-table-container {
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid black;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: white;
+}
+
+/* Header row */
+.wait-table-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+}
+
+.wait-table-header input {
+  margin-right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.wait-table-header span {
+  color: #276749; /* text-green-700 */
+  font-weight: 500;
+}
+
+/* Row */
+.wait-table-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+  transition: background-color 0.2s;
+}
+
+.wait-table-row:hover {
+  background-color: #f9fafb; /* hover:bg-gray-50 */
+}
+
+.wait-table-left {
+  display: flex;
+  align-items: center;
+}
+
+.wait-table-left input {
+  margin-right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.wait-table-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  margin-right: 0.75rem;
+  border: 1px solid black;
+}
+
+.wait-table-name {
+  width: 12rem;
+  font-weight: 500;
+  color: #2d3748; /* text-gray-800 */
+}
+
+/* Action buttons */
+.wait-table-actions button {
+  padding: 0.25rem 0.75rem;
+  margin-right: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid black;
+  color: black;
+  transition: background-color 0.2s;
+}
+
+.wait-table-actions .btn-white {
+  background-color: white;
+}
+
+.wait-table-actions .btn-light-green {
+  background-color: #edf1d6;
+}
+
+.wait-table-actions .btn-green {
+  background-color: #9dc08b;
+}
+
+.wait-table-actions button:hover {
+  background-color: #7da671;
+}

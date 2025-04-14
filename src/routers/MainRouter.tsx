@@ -5,6 +5,7 @@ const MainRouter = () => {
     <Routes>
       <Route path="/home" element={<index.HomeScreen />} />
       <Route path="/activity" element={<index.Activity />} />
+      <Route path="/campaign" element={<index.Campaign />} />
       <Route path="/admin" element={<index.Admin />} />
       <Route path="/admin/statistics" element={<index.Statistics />} />
       <Route

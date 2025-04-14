@@ -15,6 +15,7 @@ import HomeScreen from "./home/HomeScreen";
 import ChangePassword from "./profile/ChangePassword";
 import Upfile from "../screens/auth/Upfile";
 import Nonti from "./notification/Nonti";
+import Campaign from "./camp/Campaign";
 
 const index = {
   Login,
@@ -34,6 +35,7 @@ const index = {
   ChangePassword,
   Upfile,
   Nonti,
+  Campaign,
 };
 
 export default index;

@@ -1,0 +1,96 @@
+.campain-table-container {
+  border: 1px solid black;
+  border-radius: 1rem;
+  width: 100%;
+  overflow: hidden;
+  background-color: white;
+}
+
+/* Header */
+.campain-table-header {
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  background-color: white;
+}
+
+.header-grid {
+  display: grid;
+  grid-template-columns: 50px 60px 250px 300px 150px 120px; /* Độ rộng cột Actions */
+  align-items: center;
+}
+
+.header-grid input {
+  margin-right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.header-grid span {
+  color: #276749; /* text-green-700 */
+  font-weight: 500;
+  padding: 0 0.5rem;
+}
+
+/* Row */
+.campain-table-row {
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+  transition: background-color 0.2s;
+}
+
+.campain-table-row:hover {
+  background-color: #f7fafc; /* hover:bg-gray-100 */
+}
+
+.row-grid {
+  display: grid;
+  grid-template-columns: 50px 60px 250px 300px 150px 120px; /* Khớp với header */
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.row-grid input {
+  margin-right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.campain-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid black;
+}
+
+.campain-orgname,
+.campain-campname,
+.campain-status {
+  padding: 0 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Cắt ngắn nội dung dài với dấu ... */
+}
+
+/* Actions (icons) */
+.campain-table-icons {
+  display: flex;
+  gap: 0.5rem; /* Khoảng cách giữa các icon */
+  justify-content: flex-end; /* Sát lề phải của cột Actions */
+  padding-right: 0; /* Loại bỏ padding bên phải */
+}
+
+.campain-table-icons svg {
+  cursor: pointer;
+}
+
+.campain-table-icons .MuiSvgIcon-root {
+  transition: color 0.2s;
+}
+
+.campain-table-icons .MuiSvgIcon-root:hover.text-green-400 {
+  color: #68d391; /* hover green */
+}
+
+.campain-table-icons .MuiSvgIcon-root:hover.text-yellow-400 {
+  color: #f6e05e; /* hover yellow */
+}

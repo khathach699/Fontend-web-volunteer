@@ -1,42 +1,56 @@
 import AvatarAdmin from "../auth/components/AvatarAdmin";
-import TableAdmin from "../auth/components/TableAdmin";
+//import TableAdmin from "../auth/components/TableAdmin";
 import WaitTable from "../auth/components/WaitTable";
+import "./OriginManagement.css";
+import Header from "../../components/common/Header";
+//import { jwtDecode } from "jwt-decode";
 
 const OriginManagement = () => {
+  // const [volunteerList, setVolunteerList] = useState<Volunteer[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
+  // const token = useSelector((state: RootState) => state.authReducer.data.token);
+  // const apiCalledRef = useRef(false);
+
+  // const handleGetListOriganization = async () => {
+  //     try {
+  //         setLoading(true);
+  //         const api = "/organizations";
+  //         const decoded = jwtDecode<{ id: string }>(token);
+  //         const id = decoded.id;
+
+  //         const res = await handleAPI<
+
   return (
     <div>
-      <div className="flex justify-between items-center p-4 bg-white rounded-2xl border border-black">
-        <h2 className="font-bold m-0">QUẢN LÝ TỔ CHỨC</h2>
-        <div>
-          <AvatarAdmin />
+      <Header />
+
+      <div className="cm-header-container mt-4">
+        <h2 className="om-header-title">QUẢN LÝ TỔ CHỨC</h2>
+        <div className="om-header-avatar"></div>
+      </div>
+
+      <div className="om-action-buttons">
+        <div className="om-button-group">
+          <button className="om-button">VÔ HIỆU</button>
+          <button className="om-button">XÓA</button>
+          <button className="om-button">XUẤT EXCEL</button>
         </div>
       </div>
 
-      <div className="flex justify-end mt-4 space-x-2">
-        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
-          VÔ HIỆU
-        </button>
-        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
-          XÓA
-        </button>
-        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
-          XUẤT EXCEL
-        </button>
+      <div className="om-section-title">DANH SÁCH TỔ CHỨC</div>
+      {/* <TableAdmin /> */}
+
+      <br />
+
+      <div className="om-approve-buttons">
+        <div className="om-button-group">
+          <button className="om-button om-button-white">KHÔNG CHẤP NHẬN</button>
+          <button className="om-button">DUYỆT</button>
+        </div>
       </div>
 
-      <div className="mt-4 font-medium">DANH SÁCH TỔ CHỨC</div>
-      <TableAdmin />
-
-      <div className="flex justify-end mt-8 space-x-2">
-        <button className="px-4 py-2 rounded-3xl border border-black bg-white text-black">
-          KHÔNG CHẤP NHẬN
-        </button>
-        <button className="px-4 py-2 rounded-3xl border border-black bg-[#9DC08B] text-black">
-          DUYỆT
-        </button>
-      </div>
-
-      <div className="mt-4 font-medium">CÁC TỔ CHỨC ĐANG CHỜ DUYỆT</div>
+      <div className="om-section-title">CÁC TỔ CHỨC ĐANG CHỜ DUYỆT</div>
       <WaitTable />
     </div>
   );

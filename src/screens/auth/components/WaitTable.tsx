@@ -1,88 +1,160 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-import React, { useState } from "react";
-
-type Org = {
-    id: number;
-    name: string;
-    avatar: string;
+type Post = {
+  _id: string;
+  text: string;
+  organization: {
+    _id: string;
+    info: string;
+    certificate: string;
+    bankName: string;
+    bankNumber: string;
+    isdeleted: boolean;
+    user: string;
+    isVerified: boolean;
+  };
 };
 
-const orgsMock: Org[] = [
-    {
-        id: 1,
-        name: "Tổ chức Beta",
-        avatar: "../src/assets/avatar.jpg",
-    },
-    {
-        id: 2,
-        name: "Tổ chức Alpha",
-        avatar: "../src/assets/avatar.jpg",
-    },
-];
-
 const WaitTable: React.FC = () => {
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-    const toggleSelectAll = () => {
-        if (selectedIds.length === orgsMock.length) {
-            setSelectedIds([]);
-        } else {
-            setSelectedIds(orgsMock.map((org) => org.id));
-        }
-    };
-
-    const toggleSelect = (id: number) => {
-        setSelectedIds((prev) =>
-            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:3001/posts?isAccepted=false"
         );
+        if (res.data.success) {
+          setPosts(res.data.data.posts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+      }
     };
+    fetchPosts();
+  }, []);
 
-    const isSelected = (id: number) => selectedIds.includes(id);
+  const approvePosts = async (id: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/posts/approve/${id}`
+      );
+      console.log("Approve response:", response.data);
 
-    return (
-        <div className="w-100 mx-auto rounded-2xl overflow-hidden" style={{ border: "1px solid black" }}>
-            <div className="flex items-center px-4 py-2 bg-white border-b">
-                <input
-                    type="checkbox"
-                    checked={selectedIds.length === orgsMock.length}
-                    onChange={toggleSelectAll}
-                    className="mr-3 w-6 h-6"
-                />
-                <span className="text-green-700 font-medium">Select all</span>
-            </div>
+      if (response.data.success) {
+        toast.success("Duyệt thành công");
 
-            {/* Rows */}
-            {orgsMock.map((org) => (
-                <div
-                    key={org.id}
-                    className="flex items-center justify-between px-4 py-2 border-b hover:bg-gray-50 bg-white"
-                >
-                    <div className="flex">
-                        <input
-                            type="checkbox"
-                            checked={isSelected(org.id)}
-                            onChange={() => toggleSelect(org.id)}
-                            className="mr-3 w-6 h-6"
-                        />
-                        <img
-                            src={org.avatar}
-                            alt="avatar"
-                            className="w-6 h-6 rounded-full mr-3"
-                            style={{ border: "1px solid black" }}
-                        />
-                        <span className="w-48 font-medium text-gray-800">{org.name}</span>
-                    </div>
-                    <div>
-                        <button className="px-3 py-1 rounded-full text-black hover:bg-[#7DA671] mr-2 bg-white" style={{ border: "1px solid black"}}>KHÔNG DUYỆT</button>
-                        <button className="px-4 py-1 rounded-full text-black hover:bg-[#7DA671] mr-2" style={{ border: "1px solid black", backgroundColor: "#EDF1D6" }}>XEM</button>
-                        <button className="px-4 py-1 rounded-full text-black hover:bg-[#7DA671] mr-2" style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}>DUYỆT</button>
+        // Cập nhật danh sách bài viết sau khi duyệt
+        setPosts((prevPosts) => prevPosts.filter((post) => post._id !== id));
 
-                    </div>
+        // Cập nhật danh sách lựa chọn
+        setSelectedIds((prevIds) =>
+          prevIds.filter((selectedId) => selectedId !== id)
+        );
+      } else {
+        alert(`Lỗi: ${response.data.message || "Không thể duyệt chiến dịch"}`);
+      }
+    } catch (err: any) {
+      toast.error("Không thể kết nối đến server. Vui lòng thử lại");
+    }
+  };
 
-                </div>
-            ))}
-        </div>
+  const rejectPosts = async (id: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/posts/reject/${id}`
+      );
+      console.log("Approve response:", response.data);
+
+      if (response.data.success) {
+        toast.success("KhÔng duyệt thành công");
+
+        // Cập nhật danh sách bài viết sau khi duyệt
+        setPosts((prevPosts) => prevPosts.filter((post) => post._id !== id));
+
+        // Cập nhật danh sách lựa chọn
+        setSelectedIds((prevIds) =>
+          prevIds.filter((selectedId) => selectedId !== id)
+        );
+      } else {
+        alert(`Lỗi: ${response.data.message || "Không thể duyệt chiến dịch"}`);
+      }
+    } catch (err: any) {
+      toast.error("Không thể kết nối đến server. Vui lòng thử lại");
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === posts.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(posts.map((post) => post._id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+  };
+
+  const isSelected = (id: string) => selectedIds.includes(id);
+
+  return (
+    <div
+      className="w-100 mx-auto rounded-2xl overflow-hidden"
+      style={{ border: "1px solid black" }}
+    >
+      <div className="flex items-center px-4 py-2 bg-white border-b">
+        <input
+          type="checkbox"
+          checked={selectedIds.length === posts.length}
+          onChange={toggleSelectAll}
+          className="mr-3 w-6 h-6"
+        />
+        <span className="text-green-700 font-medium">Chọn tất cả</span>
+      </div>
+
+      {posts.map((post) => (
+        <div
+          key={post._id}
+          className="flex items-center justify-between px-4 py-2 border-b hover:bg-gray-50 bg-white"
+        >
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={isSelected(post._id)}
+              onChange={() => toggleSelect(post._id)}
+              className="mr-3 w-6 h-6"
+            />
+            <span className="w-64 font-medium text-gray-800">
+              {post.text.slice(0, 60)}...
+            </span>
+          </div>
+          <div>
+            <button
+              className="px-4 py-1 rounded-full text-black hover:bg-[#7DA671] mr-2"
+              style={{ border: "1px solid black", backgroundColor: "#9DC08B" }}
+              onClick={() => approvePosts(post._id)}
+            >
+              DUYỆT
+            </button>
+            <button
+              className="px-3 py-1 rounded-full text-black hover:bg-[#7DA671] mr-2 bg-white"
+              style={{ border: "1px solid black" }}
+              onClick={() => rejectPosts(post._id)}
+              // Có thể thêm logic từ chối tại đây
+            >
+              KHÔNG DUYỆT
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default WaitTable;

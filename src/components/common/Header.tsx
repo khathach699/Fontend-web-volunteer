@@ -65,10 +65,10 @@ const HeaderComponent = () => {
           <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
             Trang chủ
           </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
+          <Link to="/activity" style={{ color: "#40513B", marginRight: "40px" }}>
             Hoạt động
           </Link>
-          <Link to="/" style={{ color: "#40513B", marginRight: "40px" }}>
+          <Link to="/campaign" style={{ color: "#40513B", marginRight: "40px" }}>
             Tình Nguyện
           </Link>
           <Link
