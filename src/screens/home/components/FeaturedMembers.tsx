@@ -1,11 +1,11 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-interface Member {
+interface MemberProps {
   avatar: string;
   title: string;
   number: number;
@@ -14,54 +14,109 @@ interface Member {
 
 // Sử dụng props để truyền dữ liệu từ bên ngoài
 interface FeaturedMembersProps {
-  members: Member[];
+  members: MemberProps[];
 }
 
 const FeaturedMembers: React.FC<FeaturedMembersProps> = ({ members }) => {
+  // Sắp xếp thành viên theo số point từ cao đến thấp
+  const sortedMembers = [...members].sort((a, b) => b.number - a.number);
+
+  // Tính số lượng slides để hiển thị
+  const slidesPerView = Math.min(sortedMembers.length, 5);
+  // Chỉ bật loop khi có đủ slide
+  const enableLoop = sortedMembers.length > slidesPerView;
+
   return (
     <div
       style={{
         width: "1200px",
-        height: "240px",
+        height: "300px",
         padding: "20px",
         background: "#F7F7F8",
         boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.9)",
       }}
     >
       <Swiper
-        modules={[Navigation, Pagination]}
-        pagination={{ clickable: true }}
+        modules={[Navigation, Pagination, Autoplay]}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        speed={500}
         spaceBetween={30}
-        slidesPerView={5}
-        loop={true}
-        style={{ width: "100%", height: "230px" }}
+        slidesPerView={slidesPerView}
+        loop={enableLoop}
+        style={{ width: "90%", height: "240px", margin: "auto" }}
       >
-        {members.map((member, index) => (
+        {sortedMembers.map((member, index) => (
           <SwiperSlide key={index}>
-            <div className="d-flex flex-column align-items-center">
-              <img
-                src={member.avatar}
-                alt={member.title}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "220px",
+                width: "100%",
+                background: "#fff",
+                borderRadius: "12px",
+                padding: "15px",
+                boxShadow: "0px 4px 15px rgba(0,0,0,0.1)",
+              }}
+            >
+              <div
                 style={{
                   width: "120px",
                   height: "120px",
-                  objectFit: "cover",
-                }}
-              />
-              <div>
-                {member.number} {member.start}
-              </div>
-              <div
-                style={{
-                  fontWeight: "700",
-                  fontSize: "24px",
+                  borderRadius: "50%",
                   overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  maxWidth: "200px",
+                  marginBottom: "15px",
                 }}
               >
-                {member.title}
+                <img
+                  src={member.avatar}
+                  alt={member.title}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "/src/assets/logos/avt.png";
+                  }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <h4
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    margin: "0 0 8px 0",
+                    wordWrap: "break-word",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {member.title}
+                </h4>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                  }}
+                >
+                  <span>{member.number}</span>
+                  {member.start && (
+                    <div
+                      style={{
+                        color: "#FFD700",
+                        marginLeft: "8px",
+                        transform: "scale(1.2)",
+                      }}
+                    >
+                      {member.start}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </SwiperSlide>

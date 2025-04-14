@@ -2,7 +2,7 @@ import axios from "axios";
 import { InternalAxiosRequestConfig } from "axios";
 import queryString from "query-string";
 
-const baseURL = `http://192.168.100.27:3001`;
+const baseURL = `http://192.168.238.172:3001`;
 
 const axiosClient = axios.create({
   baseURL,

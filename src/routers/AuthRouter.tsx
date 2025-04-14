@@ -1,20 +1,8 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import {
-  ForgotPassword,
-  Login,
-  SignUp,
-  ForgotPasswordOTP,
-  Admin,
-} from "../screens/auth/index";
-import HomeScreen from "../screens/home/HomeScreen";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import index from "../screens/index";
 import { authSelector, AuthState } from "../reduxs/reducers/authReducer";
 import { useSelector } from "react-redux";
-import Activity from "../screens/auth/Activity";
-import Statistics from "../screens/auth/Admin/Statistics";
-import VolunteerManagement from "../screens/auth/Admin/VolunteerManagement";
-import PostManagement from "../screens/auth/Admin/PostManagement";
-import OriginManagement from "../screens/auth/Admin/OriginManagement";
 const AuthRouter = () => {
   const auth: AuthState = useSelector(authSelector);
 
@@ -22,31 +10,38 @@ const AuthRouter = () => {
     <Routes>
       {!auth.token ? (
         <>
-          <Route path="/" element={<Login />} />
-          <Route path="/signUp" element={<SignUp />} />
-          <Route path="/ForgotPassword" element={<ForgotPassword />} />
-          <Route path="/ForgotPasswordOTP" element={<ForgotPasswordOTP />} />
-          <Route path="*" element={<Login />} />
+          <Route path="/" element={<index.Login />} />
+          <Route path="/signUp" element={<index.SignUp />} />
+          <Route path="/ForgotPassword" element={<index.ForgotPassword />} />
+          <Route
+            path="/ForgotPasswordOTP"
+            element={<index.ForgotPasswordOTP />}
+          />
+          <Route path="*" element={<index.Login />} />
         </>
       ) : (
         <>
-          <Route path="/home" element={<HomeScreen />} />
-          <Route path="/activity" element={<Activity />} />
-          <Route path="/admin/statistics" element={<Statistics />} />
+          <Route path="/home" element={<index.HomeScreen />} />
+          <Route path="/activity" element={<index.Activity />} />
+          <Route path="/admin/statistics" element={<index.Statistics />} />
           <Route
             path="/admin/volunteer-management"
-            element={<VolunteerManagement />}
+            element={<index.VolunteerManagement />}
           />
-          <Route path="/admin/post-management" element={<PostManagement />} />
+          <Route
+            path="/admin/post-management"
+            element={<index.PostManagement />}
+          />
           <Route
             path="/admin/origin-management"
-            element={<OriginManagement />}
+            element={<index.OriginManagement />}
           />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="*" element={<HomeScreen />} />
+          <Route path="/admin" element={<index.Admin />} />
+          <Route path="*" element={<index.HomeScreen />} />
         </>
       )}
     </Routes>
+    
   );
 };
 

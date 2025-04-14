@@ -1,0 +1,57 @@
+/* OriginManagement.css */
+
+/* Header */
+.om-header-container {
+    display: flex;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 1rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.om-header-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.om-header-avatar {
+    justify-self: end;
+    margin-right: 20px;
+}
+
+/* Nhóm nút hành động */
+.om-action-buttons,
+.om-approve-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.om-button-group {
+    display: flex;
+    align-items: center;
+}
+
+.om-button {
+    color: black;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: 1px solid black;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    background-color: #9DC08B;
+}
+
+.om-button-white {
+    background-color: white;
+}
+
+/* Tiêu đề phần danh sách */
+.om-section-title {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    font-weight: bold;
+}

@@ -14,7 +14,7 @@ const SideBar = ({ onSelect }: { onSelect: (page: string) => void }) => {
     };
 
     return (
-        <div className="h-screen w-sm bg-white ">
+        <div className="h-screen bg-white fixed top-0 left-0  w-1/4 shadow-lg z-50">
             <img className="px-15" src="../src/assets/img/logo.png" alt="logo" />
             <Link to="/Admin/Statistics">
                 <button

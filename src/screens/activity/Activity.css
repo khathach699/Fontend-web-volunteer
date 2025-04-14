@@ -1,0 +1,63 @@
+/* Activity.css */
+
+.activity-container {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #EDF1D6;
+  }
+  
+  .header-wrapper {
+    width: 100%;
+  }
+  
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .controls {
+    margin: 12px 0;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .controls .spacer {
+    width: 20px;
+  }
+  
+  .posts-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .background-image {
+    width: 360px;
+    opacity: 0.2;
+    position: fixed;
+  }
+  
+  .bg-handshake {
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .bg-public {
+    top: 10%;
+    right: 0;
+  }
+  
+  .bg-volunteer {
+    top: 0;
+    left: 0;
+  }
+  
