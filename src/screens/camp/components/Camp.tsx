@@ -1,20 +1,64 @@
-import React, { useState } from "react";
-import { MoreHoriz } from "@mui/icons-material";
-import { IosShare, Handshake, VolunteerActivism } from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
+import {
+  MoreHoriz,
+  IosShare,
+  Handshake,
+  VolunteerActivism,
+} from "@mui/icons-material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor } from "@mui/material/Alert";
 import { AlertProps } from "@mui/material/Alert";
 import Quyengop from "./quyengop";
 import { Link } from "react-router-dom";
 
-const Picture = [
-  "src/assets/img/2.png",
-  "src/assets/img/3.png",
-  "src/assets/img/4.png",
-  "src/assets/img/5.png",
-];
+// Định nghĩa kiểu dữ liệu cho Campaign (dựa trên dữ liệu từ API)
+interface Image {
+  imgUrl: string;
+}
 
-const Tags = ["trên 100 người", "môi trường", "Tp.HCM", "50 điểm", "1 tháng"];
+interface Organization {
+  _id: string;
+  info: string;
+  certificate: string;
+  bankName: string;
+  bankNumber: string;
+  isdeleted: boolean;
+  user: string;
+  isVerified: boolean;
+}
+
+interface State {
+  _id: string;
+  name: string;
+  isdeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface Campaign {
+  _id: string;
+  name: string;
+  organization: Organization;
+  state: State | null;
+  numberOfPeople: number;
+  amountOfMoney: number;
+  donate: number;
+  isAccepted: boolean;
+  isdeleted: boolean;
+  Start: string;
+  NumberOfDay: number;
+  participated: number;
+  img: string | null;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  content?: string;
+  Text?: string;
+  AmountOfMoney?: number;
+  Donated?: number;
+  images?: Image[]; // Thêm trường images để lưu mảng ảnh
+}
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   function Alert(props, ref) {
@@ -23,25 +67,44 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
 );
 
 const Camp = () => {
-  const [likes, setLikes] = useState(100); // Khởi tạo số likes ban đầu
-  const [isLiked, setIsLiked] = useState(false); // Trạng thái thích bài viết
-  const [showForm, setShowForm] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState<AlertColor>("success");
-  const [participants, setParticipants] = useState(50); // Example initial value
-  const [maxParticipants, setMaxParticipants] = useState(100); // Example initial value
-  const [donation, setDonation] = useState(0); // Initial donation amount
-  const [maxDonation, setMaxDonation] = useState(1000000); // Example maximum donation amount
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown menu
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]); // Lưu danh sách chiến dịch từ API
+  const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
+  const [error, setError] = useState<string | null>(null); // Trạng thái lỗi
+  const [showForm, setShowForm] = useState<string | null>(null); // ID của chiến dịch đang mở form quyên góp
+  const [open, setOpen] = useState(false); // Snackbar cho sao chép link
+  const [severity, setSeverity] = useState<AlertColor>("success"); // Trạng thái của Snackbar
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikes(isLiked ? likes - 1 : likes + 1); // Thay đổi số lượng thích khi click
-  };
+  // Gọi API khi component được render
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          "http://localhost:3001/campaigns/getall?isAccepted=true"
+        );
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            setCampaigns(result.data.campaigns);
+          } else {
+            setError("Không thể tải danh sách chiến dịch.");
+          }
+        } else {
+          setError("Lỗi khi gọi API: " + response.statusText);
+        }
+      } catch (err) {
+        setError("Lỗi kết nối: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleCopyLink = () => {
-    const link = window.location.href;
+    fetchCampaigns();
+  }, []);
 
+  // Xử lý sao chép link
+  const handleCopyLink = (campaignId: string) => {
+    const link = `${window.location.origin}/campaign/${campaignId}`; // Tạo link động cho chiến dịch
     navigator.clipboard
       .writeText(link)
       .then(() => {
@@ -59,152 +122,250 @@ const Camp = () => {
     setOpen(false);
   };
 
+  // Hiển thị trạng thái loading hoặc lỗi
+  if (loading)
+    return (
+      <div className="text-center text-lg text-gray-600">
+        Đang tải dữ liệu...
+      </div>
+    );
+  if (error)
+    return <div className="text-center text-lg text-red-600">{error}</div>;
+
   return (
-    <div className="bg-white w-2/3 rounded-3xl border-2 m-2">
-      <div className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img
-              src="https://www.w3schools.com/w3images/avatar6.png"
-              alt="Avatar"
-              className="rounded-full  w-12"
-            />
-            <h3 className="w-fit m-2 text-[#40513B]">Tổ Chức Alpha</h3>
-            <p className="text-[#609966] m-0 mx-4 w-fit">1 giờ trước</p>
-            <p className="text-black m-0 mx-4 w-fit">đã phát động</p>
-            <div className="w-fit bg-[#9DC08B] border rounded-full p-2">
-              CHIẾN DỊCH THÁNG 3
-            </div>
-          </div>
-          <div className="dropdown" style={{ position: "relative" }}>
-            <button
-              className="ml-2 text-[#000000] hover:text-[#EDF1D6] transition-all duration-200"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              {/* Link dẫn tới trang chức năng chưa được phát triển*/}
-              {isDropdownOpen && (
-                <div className="dropdown-menu dropdown-menu-right show mt-2">
-                  <Link to="/" className="dropdown-item ">
-                    Chỉnh sửa chiến dịch
-                  </Link>
-                  <Link to="/" className="dropdown-item ">
-                    Xóa chiến dịch
-                  </Link>
-                  <Link to="/" className="dropdown-item ">
-                    Dừng phát động
-                  </Link>
-                  <Link to="/" className="dropdown-item ">
-                    Chi tiết
-                  </Link>
-                </div>
-              )}
-              <MoreHoriz sx={{ color: "#40513B", fontSize: 40 }} />
-            </button>
-          </div>
-        </div>
-        <div className="flex m-2">
-          {Tags.map((item) => (
-            <div className="w-fit bg-[#EDF1D6] rounded-full px-3 py-1 m-1 shadow-md">
-              {item}
-            </div>
-          ))}
-        </div>
-        <p className="text-lg my-3 mx-3">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa
-          reprehenderit nobis saepe facilis facere quo? Asperiores
-          exercitationem unde quam eius nulla consequatur necessitatibus
-          deleniti impedit corporis? Itaque quod ad maxime!
-        </p>
+    <div className="flex flex-col items-center">
+      {campaigns.map((campaign) => {
+        // Xử lý các trường dữ liệu không đồng nhất
+        const description =
+          campaign.content || campaign.Text || "Không có mô tả.";
+        const totalAmount =
+          campaign.AmountOfMoney || campaign.amountOfMoney || 0;
+        const donatedAmount = campaign.Donated || campaign.donate || 0;
 
-        {/* Hiển thị ảnh từ mảng Picture */}
-        <div className="flex w-40 m-2">
-          {Picture.map((item, index) => (
-            <img
-              key={index}
-              className="mx-3 rounded-2xl object-cover"
-              src={item}
-              alt="Pic"
-            />
-          ))}
-        </div>
-      </div>
-      {/* Footer với nút "Thích" và "Chia sẻ" */}
-      <div className="flex justify-between border-1 border-[#40513B] rounded-b-3xl p-2">
-        <div className="flex items-center" onClick={handleLike}>
-          <Handshake
-            sx={{
-              color: isLiked ? "#609966" : "#40513B",
-              fontSize: 40,
-              marginLeft: 2,
-            }}
-          />
-          <h4 className={`text-${isLiked ? "red-500" : "gray-700"} m-1`}>
-            {likes}
-          </h4>
-        </div>
-        <button className="flex w-fit  " onClick={() => setShowForm(true)}>
-          <VolunteerActivism
-            sx={{ color: "#40513B", fontSize: 40, marginLeft: 2 }}
-          />
-          <h4 className="text-[#40513B] m-1 hover:text-[#609966] ">
-            Quyên góp
-          </h4>
-        </button>
+        // Lấy danh sách ảnh từ mảng images, tối đa 3 ảnh
+        const displayImages = campaign.images
+          ? campaign.images.slice(0, 3).map((image) => image.imgUrl)
+          : campaign.img
+            ? [campaign.img]
+            : [];
 
-        <div className="flex w-fit  " onClick={handleCopyLink}>
-          <IosShare sx={{ color: "#40513B", fontSize: 40, marginLeft: 2 }} />
-          <h4 className="text-[#40513B] m-1 hover:text-[#609966] ">Chia sẻ</h4>
-        </div>
-        {showForm && (
+        return (
           <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1000,
-            }}
-            onClick={() => setShowForm(false)}
+            key={campaign._id}
+            className="bg-white w-11/12 max-w-4xl rounded-2xl border border-gray-200 shadow-lg m-4 p-6 transition-all duration-300 hover:shadow-xl"
           >
-            <div
-              style={{
-                backgroundColor: "#EDF1D6",
-                borderRadius: "10px",
-                padding: "20px",
-                width: "600px",
-                maxWidth: "90%",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Quyengop
-                onClose={() => setShowForm(false)}
-                onSubmit={(channel, url) => {
-                  console.log(`Channel: ${channel}, URL: ${url}`);
-                  setShowForm(false);
-                }}
-              />
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <img
+                    src="https://www.w3schools.com/w3images/avatar6.png"
+                    alt="Avatar"
+                    className="rounded-full w-12 h-12 border-2 border-green-200"
+                  />
+                  <div className="flex flex-col">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {campaign.organization.info || "Tổ Chức Alpha"}
+                    </h3>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-sm text-green-600">
+                        {new Date(campaign.createdAt).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm text-gray-600">đã phát động</p>
+                    </div>
+                  </div>
+                  <div className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                    {campaign.name}
+                  </div>
+                </div>
+                <div className="relative">
+                  <button className="text-gray-600 hover:text-green-600 transition-all duration-200">
+                    <MoreHoriz sx={{ fontSize: 32 }} />
+                  </button>
+                  {/* Dropdown menu có thể thêm sau nếu cần */}
+                </div>
+              </div>
+
+              {/* Hiển thị trạng thái và thông tin chiến dịch */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                <div className="bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full shadow-sm hover:bg-green-100 transition-all duration-200">
+                  {campaign.state?.name || "Không xác định"}
+                </div>
+                <div className="bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full shadow-sm hover:bg-green-100 transition-all duration-200">
+                  {campaign.NumberOfDay} ngày
+                </div>
+                <div className="bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full shadow-sm hover:bg-green-100 transition-all duration-200">
+                  {campaign.participated} người tham gia
+                </div>
+              </div>
+
+              {/* Mô tả chiến dịch */}
+              <p className="text-base text-gray-700 mt-4 leading-relaxed">
+                {description}
+              </p>
+
+              {/* Hiển thị ảnh chiến dịch */}
+              <div className="flex space-x-4 mt-4">
+                {displayImages.length > 0 ? (
+                  displayImages.map((imgUrl, index) => (
+                    <img
+                      key={index}
+                      className="rounded-xl object-cover border border-gray-200 shadow-sm transform transition-all duration-300 hover:scale-105"
+                      src={imgUrl}
+                      alt={`Campaign Image ${index + 1}`}
+                      style={{ width: "120px", height: "120px" }}
+                    />
+                  ))
+                ) : (
+                  <div
+                    className="rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 font-medium"
+                    style={{ width: "120px", height: "120px" }}
+                  >
+                    Không có ảnh
+                  </div>
+                )}
+              </div>
+
+              {/* Tiến độ quyên góp */}
+              <div className="mt-4">
+                <p className="text-sm text-gray-600">
+                  Đã quyên góp: {donatedAmount.toLocaleString()} /{" "}
+                  {totalAmount.toLocaleString()} VND
+                </p>
+                <div className="w-full bg-gray-200 rounded-full h-3 mt-2 overflow-hidden">
+                  <div
+                    className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.min((donatedAmount / totalAmount) * 100, 100)}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
             </div>
+
+            {/* Footer với nút "Thích", "Quyên góp" và "Chia sẻ" */}
+            <div className="flex justify-between items-center mt-6 border-t border-gray-200 pt-4">
+              <div className="flex items-center space-x-2 cursor-pointer group">
+                <Handshake
+                  sx={{
+                    color: "#4b5563",
+                    fontSize: 32,
+                    transition: "color 0.2s",
+                  }}
+                  className="group-hover:text-green-600"
+                />
+                <h4 className="text-gray-600 group-hover:text-green-600 transition-all duration-200">
+                  {campaign.participated}
+                </h4>
+              </div>
+              <button
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-50 hover:bg-green-100 transition-all duration-200"
+                onClick={() => setShowForm(campaign._id)}
+              >
+                <VolunteerActivism sx={{ color: "#4b5563", fontSize: 32 }} />
+                <h4 className="text-gray-700 hover:text-green-600 transition-all duration-200">
+                  Quyên góp
+                </h4>
+              </button>
+              <div
+                className="flex items-center space-x-2 cursor-pointer group px-4 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200"
+                onClick={() => handleCopyLink(campaign._id)}
+              >
+                <IosShare
+                  sx={{
+                    color: "#4b5563",
+                    fontSize: 32,
+                  }}
+                  className="group-hover:text-green-600"
+                />
+                <h4 className="text-gray-700 group-hover:text-green-600 transition-all duration-200">
+                  Chia sẻ
+                </h4>
+              </div>
+            </div>
+
+            {/* Modal Quyên góp */}
+            {showForm === campaign._id && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1000,
+                }}
+                onClick={() => setShowForm(null)}
+              >
+                <div
+                  style={{
+                    backgroundColor: "#f7fafc",
+                    borderRadius: "16px",
+                    padding: "24px",
+                    width: "640px",
+                    maxWidth: "95%",
+                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+                    transform: "scale(0.9)",
+                    animation: "scaleIn 0.3s ease forwards",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Quyengop
+                    onClose={() => setShowForm(null)}
+                    onSubmit={(channel, url) => {
+                      console.log(`Channel: ${channel}, URL: ${url}`);
+                      setShowForm(null);
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        );
+      })}
+
+      {/* Snackbar cho sao chép link */}
       <Snackbar
         open={open}
         autoHideDuration={2000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleClose}
+          severity={severity}
+          sx={{
+            width: "100%",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            fontSize: "14px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          }}
+        >
           {severity === "success"
-            ? " Đã sao chép đường link!"
-            : " Sao chép thất bại!"}
+            ? "Đã sao chép đường link!"
+            : "Sao chép thất bại!"}
         </Alert>
       </Snackbar>
+
+      {/* Thêm CSS animation cho modal */}
+      <style>
+        {`
+          @keyframes scaleIn {
+            from {
+              transform: scale(0.9);
+              opacity: 0;
+            }
+            to {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
