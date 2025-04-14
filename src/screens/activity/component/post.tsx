@@ -10,7 +10,7 @@ const Picture = [
 
 const Post = () => {
     return (
-        <div className="bg-white w-5xl rounded-3xl border-2" >
+        <div className="bg-white w-3/4 rounded-3xl m-1 border-2" >
 
             <div className="p-4">
                 <div className="flex items-center">

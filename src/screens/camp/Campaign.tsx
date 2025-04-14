@@ -22,7 +22,7 @@ const Campain = () => {
                     <div className="w-5"></div>
                     <SearchForCamp/>
                 </div>
-                <div className=" flex flex-col items-center justify-center z-10" >
+                <div className=" flex flex-col items-center justify-center " >
                     <Camp/>
                     <Camp/>
                 </div>

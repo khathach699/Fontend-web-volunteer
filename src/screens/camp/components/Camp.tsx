@@ -1,10 +1,11 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { MoreHoriz } from "@mui/icons-material";
-import { IosShare, Handshake } from "@mui/icons-material";
+import { IosShare, Handshake, VolunteerActivism } from "@mui/icons-material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor } from "@mui/material/Alert";
-import  { AlertProps } from "@mui/material/Alert";
-
+import { AlertProps } from "@mui/material/Alert";
+import { Link } from "react-router-dom";
+import Donate from "./Donate";
 
 const Picture = [
     "src/assets/img/2.png",
@@ -28,14 +29,20 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 const Camp = () => {
     const [likes, setLikes] = useState(100); // Khởi tạo số likes ban đầu
     const [isLiked, setIsLiked] = useState(false); // Trạng thái thích bài viết
-
+    const [showForm, setShowForm] = useState(false);
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<AlertColor>("success");
+    //const [participants, setParticipants] = useState(50); // Example initial value
+    //const [maxParticipants, setMaxParticipants] = useState(100); // Example initial value
+    //const [donation, setDonation] = useState(0); // Initial donation amount
+    //const [maxDonation, setMaxDonation] = useState(1000000); // Example maximum donation amount
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown menu
 
     const handleLike = () => {
         setIsLiked(!isLiked);
         setLikes(isLiked ? likes - 1 : likes + 1); // Thay đổi số lượng thích khi click
     };
+
 
     const handleCopyLink = () => {
         const link = window.location.href;
@@ -67,10 +74,27 @@ const Camp = () => {
                         <p className="text-black m-0 mx-4 w-fit">đã phát động</p>
                         <div className="w-fit bg-[#9DC08B] border rounded-full p-2">CHIẾN DỊCH THÁNG 3</div>
                     </div>
-                    <MoreHoriz sx={{ color: "#40513B", fontSize: 40 }} />
+                    <div className="dropdown" style={{ position: "relative" }}>
+                        <button
+                            className="ml-2 text-[#000000] hover:text-[#EDF1D6] transition-all duration-200"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
+                            {/* Link dẫn tới trang chức năng chưa được phát triển*/}
+                            {isDropdownOpen && (
+                                <div className="dropdown-menu dropdown-menu-right show mt-2">
+                                    <Link to="/" className="dropdown-item ">Chỉnh sửa chiến dịch</Link>
+                                    <Link to="/" className="dropdown-item ">Xóa chiến dịch</Link>
+                                    <Link to="/" className="dropdown-item ">Dừng phát động</Link>
+                                    <Link to="/" className="dropdown-item ">Chi tiết</Link>
+                                </div>
+
+                            )}
+                            <MoreHoriz sx={{ color: "#40513B", fontSize: 40 }} />
+                        </button>
+                    </div>
                 </div>
                 <div className="flex m-2">
-                    {Tags.map((item)=> (
+                    {Tags.map((item) => (
                         <div className="w-fit bg-[#EDF1D6] rounded-full px-3 py-1 m-1 shadow-md">
                             {item}
                         </div>
@@ -85,17 +109,58 @@ const Camp = () => {
                     ))}
                 </div>
             </div>
-
             {/* Footer với nút "Thích" và "Chia sẻ" */}
             <div className="flex justify-between border-1 border-[#40513B] rounded-b-3xl p-2">
                 <div className="flex items-center" onClick={handleLike} >
                     <Handshake sx={{ color: isLiked ? "#609966" : "#40513B", fontSize: 40, marginLeft: 2 }} />
                     <h4 className={`text-${isLiked ? "red-500" : "gray-700"} m-1`}>{likes}</h4>
                 </div>
+                <button className="flex w-fit  " onClick={() => setShowForm(true)}>
+                    <VolunteerActivism sx={{ color: "#40513B", fontSize: 40, marginLeft: 2 }} />
+                    <h4 className="text-[#40513B] m-1 hover:text-[#609966] ">Quyên góp</h4>
+                </button>
+
                 <div className="flex w-fit  " onClick={handleCopyLink}>
                     <IosShare sx={{ color: "#40513B", fontSize: 40, marginLeft: 2 }} />
                     <h4 className="text-[#40513B] m-1 hover:text-[#609966] ">Chia sẻ</h4>
                 </div>
+                {showForm && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            //zIndex: 1000,
+                        }}
+                        onClick={() => setShowForm(false)}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: '#EDF1D6',
+                                borderRadius: '10px',
+                                padding: '20px',
+                                width: '600px',
+                                maxWidth: '90%',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <Donate
+                                onClose={() => setShowForm(false)}
+                                onSubmit={(channel, url) => {
+                                    console.log(`Channel: ${channel}, URL: ${url}`);
+                                    setShowForm(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
             <Snackbar open={open} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
                 <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>

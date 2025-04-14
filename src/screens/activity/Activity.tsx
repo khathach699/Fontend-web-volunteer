@@ -1,10 +1,10 @@
-import Search from "../auth/components/Search";
-import ButtonNew from "../auth/components/ButtonNew";
-import Post from "../auth/components/post";
+import ButtonNew from "./component/ButtonNew";
+import Post from "./component/post";
 import { useState } from "react";
 import HeaderComponent from "../../components/common/Header";
 import NewPost from "./component/NewPost";
 import "./Activity.css";
+import Search from "./component/Search";
 
 const Activity = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
