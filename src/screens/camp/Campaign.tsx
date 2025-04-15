@@ -4,11 +4,13 @@ import SearchForCamp from "./components/SearchForCamp";
 import NewCamp from "./components/NewCamp";
 import Camp from "./components/Camp";
 import HeaderComponent from "../../components/common/Header";
+
 const Campain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
   return (
     <div className="w-screen min-h-screen flex-col justify-center items-center bg-[#EDF1D6]">
       <div>
@@ -23,7 +25,6 @@ const Campain = () => {
           <SearchForCamp />
         </div>
         <div className=" flex flex-col items-center justify-center z-10">
-          <Camp />
           <Camp />
         </div>
       </div>

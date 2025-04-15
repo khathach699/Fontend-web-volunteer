@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface SortForm {
   onClose: () => void;
@@ -14,7 +14,10 @@ const SortForm: React.FC<SortForm> = ({ onClose, onSubmit }) => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   // Hàm để xử lý khi người dùng chọn một button
-  const handleSelect = (setter: React.Dispatch<React.SetStateAction<string | null>>, value: string) => {
+  const handleSelect = (
+    setter: React.Dispatch<React.SetStateAction<string | null>>,
+    value: string
+  ) => {
     setter(value);
   };
 
@@ -31,33 +34,41 @@ const SortForm: React.FC<SortForm> = ({ onClose, onSubmit }) => {
         <div className="flex flex-wrap gap-2">
           <button
             className={`${
-              selectedScale === 'trên 50 ng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedScale === "trên 50 ng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedScale, 'trên 50 ng')}
+            onClick={() => handleSelect(setSelectedScale, "trên 50 ng")}
           >
             trên 50 ng
           </button>
           <button
             className={`${
-              selectedScale === 'trên 100 ng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedScale === "trên 100 ng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedScale, 'trên 100 ng')}
+            onClick={() => handleSelect(setSelectedScale, "trên 100 ng")}
           >
             trên 100 ng
           </button>
           <button
             className={`${
-              selectedScale === 'trên 150 ng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedScale === "trên 150 ng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedScale, 'trên 150 ng')}
+            onClick={() => handleSelect(setSelectedScale, "trên 150 ng")}
           >
             trên 150 ng
           </button>
           <button
             className={`${
-              selectedScale === 'trên 200 ng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedScale === "trên 200 ng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedScale, 'trên 200 ng')}
+            onClick={() => handleSelect(setSelectedScale, "trên 200 ng")}
           >
             trên 200 ng
           </button>
@@ -70,33 +81,41 @@ const SortForm: React.FC<SortForm> = ({ onClose, onSubmit }) => {
         <div className="flex flex-wrap gap-2">
           <button
             className={`${
-              selectedField === 'giáo dục' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedField === "giáo dục"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedField, 'giáo dục')}
+            onClick={() => handleSelect(setSelectedField, "giáo dục")}
           >
             giáo dục
           </button>
           <button
             className={`${
-              selectedField === 'môi trường' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedField === "môi trường"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedField, 'môi trường')}
+            onClick={() => handleSelect(setSelectedField, "môi trường")}
           >
             môi trường
           </button>
           <button
             className={`${
-              selectedField === 'y tế' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedField === "y tế"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedField, 'y tế')}
+            onClick={() => handleSelect(setSelectedField, "y tế")}
           >
             y tế
           </button>
           <button
             className={`${
-              selectedField === 'văn hóa' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedField === "văn hóa"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedField, 'văn hóa')}
+            onClick={() => handleSelect(setSelectedField, "văn hóa")}
           >
             văn hóa
           </button>
@@ -109,33 +128,41 @@ const SortForm: React.FC<SortForm> = ({ onClose, onSubmit }) => {
         <div className="flex flex-wrap gap-2">
           <button
             className={`${
-              selectedRegion === 'Tp. HCM' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedRegion === "Tp. HCM"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedRegion, 'Tp. HCM')}
+            onClick={() => handleSelect(setSelectedRegion, "Tp. HCM")}
           >
             Tp. HCM
           </button>
           <button
             className={`${
-              selectedRegion === 'Hà Nội' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedRegion === "Hà Nội"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedRegion, 'Hà Nội')}
+            onClick={() => handleSelect(setSelectedRegion, "Hà Nội")}
           >
             Hà Nội
           </button>
           <button
             className={`${
-              selectedRegion === 'Miền Trung' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedRegion === "Miền Trung"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedRegion, 'Miền Trung')}
+            onClick={() => handleSelect(setSelectedRegion, "Miền Trung")}
           >
             Miền Trung
           </button>
           <button
             className={`${
-              selectedRegion === 'Miền Bắc' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedRegion === "Miền Bắc"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedRegion, 'Miền Bắc')}
+            onClick={() => handleSelect(setSelectedRegion, "Miền Bắc")}
           >
             Miền Bắc
           </button>
@@ -148,33 +175,41 @@ const SortForm: React.FC<SortForm> = ({ onClose, onSubmit }) => {
         <div className="flex flex-wrap gap-2">
           <button
             className={`${
-              selectedPoints === '10' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedPoints === "10"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedPoints, '10')}
+            onClick={() => handleSelect(setSelectedPoints, "10")}
           >
             10
           </button>
           <button
             className={`${
-              selectedPoints === '25' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedPoints === "25"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedPoints, '25')}
+            onClick={() => handleSelect(setSelectedPoints, "25")}
           >
             25
           </button>
           <button
             className={`${
-              selectedPoints === '50' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedPoints === "50"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedPoints, '50')}
+            onClick={() => handleSelect(setSelectedPoints, "50")}
           >
             50
           </button>
           <button
             className={`${
-              selectedPoints === '100' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedPoints === "100"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedPoints, '100')}
+            onClick={() => handleSelect(setSelectedPoints, "100")}
           >
             100
           </button>
@@ -187,33 +222,41 @@ const SortForm: React.FC<SortForm> = ({ onClose, onSubmit }) => {
         <div className="flex flex-wrap gap-2">
           <button
             className={`${
-              selectedTime === '14 ngày' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedTime === "14 ngày"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedTime, '14 ngày')}
+            onClick={() => handleSelect(setSelectedTime, "14 ngày")}
           >
             14 ngày
           </button>
           <button
             className={`${
-              selectedTime === '1 tháng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedTime === "1 tháng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedTime, '1 tháng')}
+            onClick={() => handleSelect(setSelectedTime, "1 tháng")}
           >
             1 tháng
           </button>
           <button
             className={`${
-              selectedTime === '3 tháng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedTime === "3 tháng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedTime, '3 tháng')}
+            onClick={() => handleSelect(setSelectedTime, "3 tháng")}
           >
             3 tháng
           </button>
           <button
             className={`${
-              selectedTime === '6 tháng' ? 'bg-[#609966] text-white' : 'bg-[#EDF1D6] border border-[#40513B]'
+              selectedTime === "6 tháng"
+                ? "bg-[#609966] text-white"
+                : "bg-[#EDF1D6] border border-[#40513B]"
             } rounded-full px-4 py-1`}
-            onClick={() => handleSelect(setSelectedTime, '6 tháng')}
+            onClick={() => handleSelect(setSelectedTime, "6 tháng")}
           >
             6 tháng
           </button>

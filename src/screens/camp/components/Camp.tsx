@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 import {
   MoreHoriz,
   IosShare,
@@ -9,9 +11,21 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor } from "@mui/material/Alert";
 import { AlertProps } from "@mui/material/Alert";
 import Quyengop from "./quyengop";
-import { Link } from "react-router-dom";
+import SortForm from "./SortForm";
 
-// Định nghĩa kiểu dữ liệu cho Campaign (dựa trên dữ liệu từ API)
+// Định nghĩa RootState
+type RootState = {
+  authReducer: {
+    data: {
+      token: string;
+      _id: string;
+      name: string;
+      rule: number;
+    };
+  };
+};
+
+// Định nghĩa kiểu dữ liệu cho Campaign
 interface Image {
   imgUrl: string;
 }
@@ -57,7 +71,7 @@ interface Campaign {
   Text?: string;
   AmountOfMoney?: number;
   Donated?: number;
-  images?: Image[]; // Thêm trường images để lưu mảng ảnh
+  images?: Image[];
 }
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
@@ -67,14 +81,28 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
 );
 
 const Camp = () => {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]); // Lưu danh sách chiến dịch từ API
-  const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
-  const [error, setError] = useState<string | null>(null); // Trạng thái lỗi
-  const [showForm, setShowForm] = useState<string | null>(null); // ID của chiến dịch đang mở form quyên góp
-  const [open, setOpen] = useState(false); // Snackbar cho sao chép link
-  const [severity, setSeverity] = useState<AlertColor>("success"); // Trạng thái của Snackbar
+  const [originalCampaigns, setOriginalCampaigns] = useState<Campaign[]>([]); // Danh sách gốc
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]); // Danh sách đã lọc
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState<string | null>(null); // Form quyên góp
+  const [showSortForm, setShowSortForm] = useState<boolean>(false); // Form lọc
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState<AlertColor>("success");
 
-  // Gọi API khi component được render
+  // Lấy token từ Redux
+  const token = useSelector((state: RootState) => state.authReducer.data.token);
+
+  // Lấy userId từ token
+  let userId = "";
+  try {
+    const decoded = jwtDecode<{ id: string }>(token);
+    userId = decoded.id;
+  } catch (error) {
+    console.error("Lỗi decode token:", error);
+    setError("Không thể xác thực người dùng. Vui lòng đăng nhập lại.");
+  }
+
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
@@ -85,7 +113,8 @@ const Camp = () => {
         if (response.ok) {
           const result = await response.json();
           if (result.success) {
-            setCampaigns(result.data.campaigns);
+            setOriginalCampaigns(result.data.campaigns); // Lưu danh sách gốc
+            setCampaigns(result.data.campaigns); // Hiển thị ban đầu
           } else {
             setError("Không thể tải danh sách chiến dịch.");
           }
@@ -102,9 +131,8 @@ const Camp = () => {
     fetchCampaigns();
   }, []);
 
-  // Xử lý sao chép link
   const handleCopyLink = (campaignId: string) => {
-    const link = `${window.location.origin}/campaign/${campaignId}`; // Tạo link động cho chiến dịch
+    const link = `${window.location.origin}/campaign/${campaignId}`;
     navigator.clipboard
       .writeText(link)
       .then(() => {
@@ -122,7 +150,192 @@ const Camp = () => {
     setOpen(false);
   };
 
-  // Hiển thị trạng thái loading hoặc lỗi
+  // Hàm xử lý quyên góp
+  const handleDonate = async (
+    money: number,
+    content: string,
+    campaignId: string
+  ) => {
+    if (!userId) {
+      setSeverity("error");
+      setOpen(true);
+      alert("Vui lòng đăng nhập để quyên góp!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/donate-campaign/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            money,
+            campaign: campaignId,
+            content,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok && result.success) {
+        setSeverity("success");
+        setOpen(true);
+        // Cập nhật giao diện
+        setCampaigns((prev) =>
+          prev.map((camp) =>
+            camp._id === campaignId
+              ? {
+                  ...camp,
+                  donate: camp.donate + money,
+                  participated: camp.participated + 1,
+                }
+              : camp
+          )
+        );
+        setOriginalCampaigns((prev) =>
+          prev.map((camp) =>
+            camp._id === campaignId
+              ? {
+                  ...camp,
+                  donate: camp.donate + money,
+                  participated: camp.participated + 1,
+                }
+              : camp
+          )
+        );
+      } else {
+        throw new Error(result.message || "Lỗi khi quyên góp");
+      }
+    } catch (error) {
+      console.error("Lỗi quyên góp:", error);
+      setSeverity("error");
+      setOpen(true);
+    }
+  };
+
+  // Hàm xử lý tham gia chiến dịch
+  const handleJoinCampaign = async (campaignId: string) => {
+    if (!userId) {
+      setSeverity("error");
+      setOpen(true);
+      alert("Vui lòng đăng nhập để tham gia!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/member-campaign/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            campaign: campaignId,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok && result.success) {
+        setSeverity("success");
+        setOpen(true);
+        // Cập nhật số người tham gia
+        setCampaigns((prev) =>
+          prev.map((camp) =>
+            camp._id === campaignId
+              ? { ...camp, participated: camp.participated + 1 }
+              : camp
+          )
+        );
+        setOriginalCampaigns((prev) =>
+          prev.map((camp) =>
+            camp._id === campaignId
+              ? { ...camp, participated: camp.participated + 1 }
+              : camp
+          )
+        );
+      } else {
+        throw new Error(result.message || "Lỗi khi tham gia chiến dịch");
+      }
+    } catch (error) {
+      console.error("Lỗi tham gia chiến dịch:", error);
+      setSeverity("error");
+      setOpen(true);
+    }
+  };
+
+  // Hàm xử lý lọc
+  const handleSort = (
+    scale: string | null,
+    field: string | null,
+    region: string | null,
+    points: string | null,
+    time: string | null
+  ) => {
+    let filteredCampaigns = [...originalCampaigns];
+
+    // Lọc theo quy mô (numberOfPeople)
+    if (scale) {
+      const scaleNumber = parseInt(scale.split(" ")[1]);
+      filteredCampaigns = filteredCampaigns.filter(
+        (camp) => camp.numberOfPeople >= scaleNumber
+      );
+    }
+
+    // Lọc theo lĩnh vực (organization.info)
+    if (field) {
+      filteredCampaigns = filteredCampaigns.filter((camp) =>
+        camp.organization.info?.toLowerCase().includes(field.toLowerCase())
+      );
+    }
+
+    // Lọc theo khu vực (state.name)
+    if (region) {
+      filteredCampaigns = filteredCampaigns.filter((camp) =>
+        camp.state?.name.toLowerCase().includes(region.toLowerCase())
+      );
+    }
+
+    // Lọc theo điểm tích lũy (giả sử có trường points, hiện không có trong dữ liệu mẫu)
+    if (points) {
+      // Nếu API trả về trường points cho chiến dịch, bạn có thể lọc như sau:
+      // filteredCampaigns = filteredCampaigns.filter(camp => camp.points === parseInt(points));
+      // Hiện tại bỏ qua vì dữ liệu không có trường này
+    }
+
+    // Lọc theo thời gian (NumberOfDay)
+    if (time) {
+      let days: number;
+      switch (time) {
+        case "14 ngày":
+          days = 14;
+          break;
+        case "1 tháng":
+          days = 30;
+          break;
+        case "3 tháng":
+          days = 90;
+          break;
+        case "6 tháng":
+          days = 180;
+          break;
+        default:
+          days = 0;
+      }
+      filteredCampaigns = filteredCampaigns.filter(
+        (camp) => camp.NumberOfDay <= days
+      );
+    }
+
+    setCampaigns(filteredCampaigns);
+  };
+
   if (loading)
     return (
       <div className="text-center text-lg text-gray-600">
@@ -135,14 +348,12 @@ const Camp = () => {
   return (
     <div className="flex flex-col items-center">
       {campaigns.map((campaign) => {
-        // Xử lý các trường dữ liệu không đồng nhất
         const description =
           campaign.content || campaign.Text || "Không có mô tả.";
         const totalAmount =
           campaign.AmountOfMoney || campaign.amountOfMoney || 0;
         const donatedAmount = campaign.Donated || campaign.donate || 0;
 
-        // Lấy danh sách ảnh từ mảng images, tối đa 3 ảnh
         const displayImages = campaign.images
           ? campaign.images.slice(0, 3).map((image) => image.imgUrl)
           : campaign.img
@@ -178,14 +389,15 @@ const Camp = () => {
                   </div>
                 </div>
                 <div className="relative">
-                  <button className="text-gray-600 hover:text-green-600 transition-all duration-200">
+                  <button
+                    className="text-gray-600 hover:text-green-600 transition-all duration-200"
+                    onClick={() => setShowSortForm(true)}
+                  >
                     <MoreHoriz sx={{ fontSize: 32 }} />
                   </button>
-                  {/* Dropdown menu có thể thêm sau nếu cần */}
                 </div>
               </div>
 
-              {/* Hiển thị trạng thái và thông tin chiến dịch */}
               <div className="flex flex-wrap gap-2 mt-4">
                 <div className="bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full shadow-sm hover:bg-green-100 transition-all duration-200">
                   {campaign.state?.name || "Không xác định"}
@@ -198,12 +410,10 @@ const Camp = () => {
                 </div>
               </div>
 
-              {/* Mô tả chiến dịch */}
               <p className="text-base text-gray-700 mt-4 leading-relaxed">
                 {description}
               </p>
 
-              {/* Hiển thị ảnh chiến dịch */}
               <div className="flex space-x-4 mt-4">
                 {displayImages.length > 0 ? (
                   displayImages.map((imgUrl, index) => (
@@ -225,7 +435,6 @@ const Camp = () => {
                 )}
               </div>
 
-              {/* Tiến độ quyên góp */}
               <div className="mt-4">
                 <p className="text-sm text-gray-600">
                   Đã quyên góp: {donatedAmount.toLocaleString()} /{" "}
@@ -235,16 +444,21 @@ const Camp = () => {
                   <div
                     className="bg-green-500 h-3 rounded-full transition-all duration-300"
                     style={{
-                      width: `${Math.min((donatedAmount / totalAmount) * 100, 100)}%`,
+                      width: `${Math.min(
+                        (donatedAmount / totalAmount) * 100,
+                        100
+                      )}%`,
                     }}
                   ></div>
                 </div>
               </div>
             </div>
 
-            {/* Footer với nút "Thích", "Quyên góp" và "Chia sẻ" */}
             <div className="flex justify-between items-center mt-6 border-t border-gray-200 pt-4">
-              <div className="flex items-center space-x-2 cursor-pointer group">
+              <div
+                className="flex items-center space-x-2 cursor-pointer group"
+                onClick={() => handleJoinCampaign(campaign._id)}
+              >
                 <Handshake
                   sx={{
                     color: "#4b5563",
@@ -283,7 +497,6 @@ const Camp = () => {
               </div>
             </div>
 
-            {/* Modal Quyên góp */}
             {showForm === campaign._id && (
               <div
                 style={{
@@ -314,11 +527,9 @@ const Camp = () => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Quyengop
+                    campaignId={campaign._id}
                     onClose={() => setShowForm(null)}
-                    onSubmit={(channel, url) => {
-                      console.log(`Channel: ${channel}, URL: ${url}`);
-                      setShowForm(null);
-                    }}
+                    onSubmit={handleDonate}
                   />
                 </div>
               </div>
@@ -327,7 +538,14 @@ const Camp = () => {
         );
       })}
 
-      {/* Snackbar cho sao chép link */}
+      {/* Hiển thị SortForm từ nút ba chấm */}
+      {showSortForm && (
+        <SortForm
+          onClose={() => setShowSortForm(false)}
+          onSubmit={handleSort}
+        />
+      )}
+
       <Snackbar
         open={open}
         autoHideDuration={2000}
@@ -346,12 +564,11 @@ const Camp = () => {
           }}
         >
           {severity === "success"
-            ? "Đã sao chép đường link!"
-            : "Sao chép thất bại!"}
+            ? "Thành công! Đã tham gia hoặc quyên góp."
+            : "Lỗi! Vui lòng thử lại."}
         </Alert>
       </Snackbar>
 
-      {/* Thêm CSS animation cho modal */}
       <style>
         {`
           @keyframes scaleIn {
